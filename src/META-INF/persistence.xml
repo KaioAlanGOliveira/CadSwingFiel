@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="3.0"
+	xmlns="https://jakarta.ee/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence
+                                 https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
+
+	<persistence-unit name="fielPersistenceUnit"
+		transaction-type="RESOURCE_LOCAL">
+
+		<!-- Provedor JPA (Hibernate) -->
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+		<!-- Se você não usar anotação @Entity em todas as classes, pode listar 
+			aqui -->
+		<!-- <class>br.com.seuapp.model.Usuario</class> -->
+		<!-- <class>br.com.seuapp.model.Pedido</class> -->
+
+		<!-- Escaneia automaticamente todas as classes @Entity -->
+		<exclude-unlisted-classes>false</exclude-unlisted-classes>
+
+		<properties>
+
+			<!-- Conexão com o banco -->
+			<property name="jakarta.persistence.jdbc.url"
+				value="jdbc:mysql://localhost:3306/dizimistas" />
+			<property name="jakarta.persistence.jdbc.user" value="root" />
+			<property name="jakarta.persistence.jdbc.password"
+				value="1234" />
+
+			<!-- Dialeto do banco (muito importante!) -->
+			<property name="hibernate.dialect"
+				value="org.hibernate.dialect.MySQLDialect" />
+
+			<!-- Cria/atualiza tabelas automaticamente (mude em produção!) -->
+			<property name="hibernate.hbm2ddl.auto" value="update" />
+
+			<!-- Mostra o SQL gerado no console (ótimo para debug) -->
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="false" />
+
+			<!-- Nível de log do Hibernate -->
+			<property name="hibernate.level" value="INFO" />
+		</properties>
+
+	</persistence-unit>
+</persistence>
