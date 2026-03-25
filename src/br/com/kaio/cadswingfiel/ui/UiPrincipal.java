@@ -13,7 +13,7 @@ public class UiPrincipal {
 
 	// 🎨 Cores refinadas para Nimbus
 	private final Color COR_PRIMARIA = new Color(0, 120, 215);
-	private final Color COR_TEXTO = new Color(60, 60, 60);
+	private final Color COR_TEXTO =  new Color(60, 60, 60);
 
 	public UiPrincipal() {
 		setNimbusLookAndFeel();
