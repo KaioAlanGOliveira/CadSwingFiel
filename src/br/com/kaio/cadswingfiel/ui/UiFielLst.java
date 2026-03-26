@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -48,13 +50,11 @@ public class UiFielLst {
 						try {
 							UiFielFrm window = new UiFielFrm();
 							window.show(null);
-							window.setVisible(true);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
 					}
 				});
-
 			}
 		});
 		btnAdd.setBounds(831, 122, 41, 23);
@@ -67,6 +67,22 @@ public class UiFielLst {
 		table = new JTable();
 		scrollPane.setViewportView(table);
 		table.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "Id", "CPF", "Nome" }));
+		table.setDefaultEditor(Object.class, null);
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+				if (e.getClickCount() == 2) {
+					int linha = table.getSelectedRow();
+					if (linha != -1) {
+						carregarFielNoFormulario(linha);
+						UiFielFrm window = new UiFielFrm();
+						window.show(null);
+					}
+				}
+
+			}
+		});
 
 		Label label = new Label("Lista");
 		label.setFont(new Font("Dialog", Font.ITALIC, 12));
@@ -100,12 +116,12 @@ public class UiFielLst {
 				String cpf = txtCpf.getText();
 
 				FielDao dao = new FielDao();
-				
+
 				try {
 					List<Fiel> lista = dao.buscarPorFiltro(cpf, nome);
 					DefaultTableModel modelo = (DefaultTableModel) table.getModel();
 					modelo.setRowCount(0);
-					
+
 					for (Fiel fe : lista) {
 						Object[] linha = { fe.getId(), fe.getCpf(), fe.getNome() };
 						modelo.addRow(linha);
@@ -118,6 +134,17 @@ public class UiFielLst {
 		});
 		btnPesq.setBounds(784, 84, 90, 28);
 		raiz.add(btnPesq);
+	}
+
+	public void carregarFielNoFormulario(int linha) {
+
+		Long id = (Long) table.getValueAt(linha, 0);
+		String cpf = (String) table.getValueAt(linha, 1);
+		String nome = (String) table.getValueAt(linha, 2);
+
+		UiFielFrm frm = new UiFielFrm();
+        frm.carregarDadosParaEdicao(id, cpf, nome);   // método que vamos criar no UiFielFrm
+        frm.show(null);
 	}
 
 	public void show(JFrame framePai) {

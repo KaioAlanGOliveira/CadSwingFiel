@@ -18,10 +18,7 @@ public class Fiel {
 	@Column(nullable = false, length = 150)
 	private String nome;
 
-	@Column(length = 3)
-	private Integer idade;
-
-	@Column(unique = true, nullable = false, precision = 100, scale = 0) // CPF tem 11 dígitos
+	@Column(unique = true, nullable = false, precision = 100, scale = 0)
 	private String cpf;
 
 	@Column(length = 15)
@@ -38,11 +35,11 @@ public class Fiel {
 	}
 
 	public Fiel() {
+
 	}
 
-	public Fiel(String nome, Integer idade, String cpf, String telefone) {
+	public Fiel(String nome, String cpf, String telefone) {
 		this.nome = nome;
-		this.idade = idade;
 		this.cpf = cpf;
 		this.telefone = telefone;
 	}
@@ -61,14 +58,6 @@ public class Fiel {
 
 	public void setNome(String nome) {
 		this.nome = nome;
-	}
-
-	public Integer getIdade() {
-		return idade;
-	}
-
-	public void setIdade(Integer idade) {
-		this.idade = idade;
 	}
 
 	public String getCpf() {
@@ -90,7 +79,7 @@ public class Fiel {
 	// Opcional: toString() para debug
 	@Override
 	public String toString() {
-		return "Fiel{" + "id=" + id + ", nome='" + nome + '\'' + ", idade=" + idade + ", cpf=" + cpf + ", telefone='"
-				+ telefone + '\'' + '}';
+		return "Fiel{" + "id=" + id + ", nome='" + nome + '\'' + ", cpf=" + cpf + ", telefone='" + telefone + '\''
+				+ '}';
 	}
 }

@@ -83,27 +83,27 @@ public class PagamentoDao {
 		}
 	}
 
+	public static List<Pagamento> getLista(long cpf) {
+
+		String sql = """
+				    select o
+				    from Pagamento o
+				    where
+				        (:cpf = '' or o.id.cpf = :cpf)
+				""";
+
+		TypedQuery<Pagamento> query = em.createQuery(sql, Pagamento.class);
+		query.setParameter("cpf", cpf);
+
+		return query.getResultList();
+	}
+
 }
 
 
 
 
-////	pagamento
 
-//public static List<Pagamento> getLista(long cpf) {
-//
-//	String sql = """
-//			    select o
-//			    from Pagamento o
-//			    where
-//			        (:cpf = '' or o.id.cpf = :cpf)
-//			""";
-//
-//	TypedQuery<Pagamento> query = em.createQuery(sql, Pagamento.class);
-//	query.setParameter("cpf", cpf);
-//
-//	return query.getResultList();
-//}
 //
 //public List<PagamentoView> listarDizimistas() {
 //	String sql = "SELECT fw FROM PagamentoView  fw";
@@ -111,15 +111,7 @@ public class PagamentoDao {
 //	return typedQuery.getResultList();
 //}
 //
-//public void removerPagamento(Long cpf) {
-//
-//	em.getTransaction().begin();
-//	int totalApagados = em.createQuery("DELETE FROM Pagamento pg WHERE pg.id.cpf = :cpf").setParameter("cpf", cpf)
-//			.executeUpdate();
-//	em.getTransaction().commit();
-//
-//	System.out.println("Total apagado: " + totalApagados);
-//}
+
 //
 //public void adicionaDizimistas(Pagamento novo) {
 //
