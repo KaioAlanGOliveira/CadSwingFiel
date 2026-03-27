@@ -5,6 +5,7 @@ import java.util.List;
 import br.com.kaio.cadswingfiel.domain.Fiel;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 
@@ -25,29 +26,39 @@ public class FielDao {
 		}
 	}
 
+	/**
+	 * Remove um Fiel e todos os seus pagamentos associados de forma segura.
+	 */
 	public void removerFiel(String cpf) throws Exception {
+		if (cpf == null || cpf.trim().isEmpty()) {
+			throw new Exception("CPF não pode ser vazio.");
+		}
+
+		EntityTransaction tx = em.getTransaction();
 
 		try {
+			tx.begin();
 
-			em.getTransaction().begin();
+			em.createQuery("DELETE FROM Pagamento p WHERE p.id.cpf = :cpf").setParameter("cpf", cpf.trim())
+					.executeUpdate();
 
-			// 1. Remover pagamentos associados primeiro
-			em.createQuery("DELETE FROM Pagamento p WHERE p.fiel.cpf = :cpf").setParameter("cpf", cpf).executeUpdate();
+			int registrosDeletados = em.createQuery("DELETE FROM Fiel f WHERE f.cpf = :cpf")
+					.setParameter("cpf", cpf.trim()).executeUpdate();
 
-			// 2. Procurar o Fiel e remover
-			List<Fiel> resultados = em.createQuery("SELECT f FROM Fiel f WHERE f.cpf = :cpf", Fiel.class)
-					.setParameter("cpf", cpf).getResultList();
+			tx.commit();
 
-			if (!resultados.isEmpty()) {
-				em.remove(resultados.get(0));
-				em.getTransaction().commit();
-				System.out.println("Fiel e pagamentos removidos.");
-			} else {
-				em.getTransaction().rollback();
-				System.out.println("Fiel não encontrado.");
+			if (registrosDeletados == 0) {
+				throw new Exception("Fiel não encontrado com o CPF: " + cpf);
 			}
+
 		} catch (Exception e) {
-			// TODO: handle exception
+			if (tx != null && tx.isActive()) {
+				try {
+					tx.rollback();
+				} catch (Exception ex) {
+				}
+			}
+			throw new Exception("Erro ao remover o fiel: " + e.getMessage(), e);
 		}
 	}
 

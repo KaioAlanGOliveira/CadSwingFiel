@@ -24,6 +24,7 @@ public class UiFielFrm {
 
 	private JTextField txtNome;
 	private JFormattedTextField txtCpf;
+	private Long idAtual;
 	private JFormattedTextField txtTelefone;
 	private JTextField txtEmail;
 
@@ -118,7 +119,6 @@ public class UiFielFrm {
 			try {
 				apagar();
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		});
@@ -152,6 +152,7 @@ public class UiFielFrm {
 
 	private void novoRegistro() {
 		limparCampos();
+		idAtual = null; // <-- MUITO IMPORTANTE
 		habilitarControles(true);
 		modoEdicao = true;
 		txtCpf.requestFocus();
@@ -181,8 +182,9 @@ public class UiFielFrm {
 	}
 
 	private void alterar() {
+
 		modoEdicao = false;
-		mensagem("Alterado ...", JOptionPane.INFORMATION_MESSAGE);
+		txtCpf.setEnabled(false);
 		habilitarControles(true);
 	}
 
@@ -190,10 +192,31 @@ public class UiFielFrm {
 
 		String cpfLimpo = txtCpf.getText().trim().replace(".", "").replace("-", "").replace("/", "");
 
-		FielDao dao = new FielDao();
-		dao.removerFiel(cpfLimpo);
+		if (cpfLimpo.isEmpty() || cpfLimpo.length() != 11) {
+			mensagem("Informe um CPF válido para apagar!", JOptionPane.WARNING_MESSAGE);
+			txtCpf.requestFocus();
+			return;
+		}
 
-		mensagem("Apagado!.", JOptionPane.INFORMATION_MESSAGE);
+		int confirm = JOptionPane.showConfirmDialog(dialog, "Deseja realmente apagar este registro?", "Confirmação",
+				JOptionPane.YES_NO_OPTION);
+
+		if (confirm != JOptionPane.YES_OPTION) {
+			return;
+		}
+
+		try {
+			FielDao dao = new FielDao();
+			dao.removerFiel(cpfLimpo);
+
+			mensagem("Fiel apagado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
+
+			limparCampos();
+			habilitarControles(false);
+
+		} catch (Exception e) {
+			mensagem("Erro ao apagar: " + e.getMessage(), JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	private void cancelar() {
@@ -211,6 +234,11 @@ public class UiFielFrm {
 		String telefoneLimpo = txtTelefone.getText().trim().replace("(", "").replace(")", "").replace("-", "")
 				.replace(" ", "");
 
+		if (!cpfLimpo.matches("\\d{11}")) {
+		    mensagem("CPF inválido!", JOptionPane.WARNING_MESSAGE);
+		    return false;
+		}
+		
 		if (cpfLimpo.isEmpty()) {
 			mensagem("O campo CPF é obrigatório!", JOptionPane.WARNING_MESSAGE);
 			txtCpf.requestFocus();
@@ -244,11 +272,19 @@ public class UiFielFrm {
 	}
 
 	public Fiel fiel() {
+
+		String cpfLimpo = txtCpf.getText().trim().replace(".", "").replace("-", "").replace("/", "");
+
+		String telefoneLimpo = txtTelefone.getText().trim().replace("(", "").replace(")", "").replace("-", "")
+				.replace(" ", "");
+
 		Fiel fiel = new Fiel();
-		fiel.setCpf(txtCpf.getText().trim());
+		fiel.setId(idAtual);
+		fiel.setCpf(cpfLimpo); 
 		fiel.setNome(txtNome.getText().trim());
-		fiel.setTelefone(txtTelefone.getText().trim());
+		fiel.setTelefone(telefoneLimpo); 
 		fiel.setEmail(txtEmail.getText().trim());
+
 		return fiel;
 	}
 
@@ -257,6 +293,7 @@ public class UiFielFrm {
 		txtNome.setText("");
 		txtTelefone.setText("");
 		txtEmail.setText("");
+		idAtual = null;
 	}
 
 	public void habilitarControles(boolean habilitar) {
@@ -283,7 +320,7 @@ public class UiFielFrm {
 	}
 
 	public void carregarDadosParaEdicao(Long id, String cpf, String nome, String telefone, String email) {
-//		this.idAtual = id; // crie o atributo private Long idAtual;
+		this.idAtual = id; // crie o atributo private Long idAtual;
 		this.modoEdicao = false;
 
 		txtCpf.setText(cpf);
