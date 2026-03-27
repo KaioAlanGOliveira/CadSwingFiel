@@ -3,7 +3,6 @@ package br.com.kaio.cadswingfiel.dao;
 import java.util.List;
 
 import br.com.kaio.cadswingfiel.domain.Fiel;
-import br.com.kaio.cadswingfiel.domain.Pagamento;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -11,8 +10,8 @@ import jakarta.persistence.TypedQuery;
 
 public class FielDao {
 
-	private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("fielPersistenceUnit");
-	private static EntityManager em = emf.createEntityManager();
+	private EntityManagerFactory emf = Persistence.createEntityManagerFactory("fielPersistenceUnit");
+	private EntityManager em = emf.createEntityManager();
 
 	public List<Fiel> listarFiel() {
 
@@ -26,20 +25,30 @@ public class FielDao {
 		}
 	}
 
-	public void removerFiel(long cpf) {
+	public void removerFiel(String cpf) throws Exception {
 
-		em.getTransaction().begin();
-		
-		List<Pagamento> lista = PagamentoDao.getLista(cpf);
-		for (Pagamento f : lista) {
-			em.remove(f);
+		try {
+
+			em.getTransaction().begin();
+
+			// 1. Remover pagamentos associados primeiro
+			em.createQuery("DELETE FROM Pagamento p WHERE p.fiel.cpf = :cpf").setParameter("cpf", cpf).executeUpdate();
+
+			// 2. Procurar o Fiel e remover
+			List<Fiel> resultados = em.createQuery("SELECT f FROM Fiel f WHERE f.cpf = :cpf", Fiel.class)
+					.setParameter("cpf", cpf).getResultList();
+
+			if (!resultados.isEmpty()) {
+				em.remove(resultados.get(0));
+				em.getTransaction().commit();
+				System.out.println("Fiel e pagamentos removidos.");
+			} else {
+				em.getTransaction().rollback();
+				System.out.println("Fiel não encontrado.");
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
-		Fiel f = em.createQuery("SELECT f FROM Fiel f WHERE f.cpf = :cpf", Fiel.class).setParameter("cpf", cpf)
-				.getSingleResult();
-		em.remove(f);
-		em.getTransaction().commit();
-
-		System.out.println("apagou");
 	}
 
 	public void adicionarFiel(Fiel novo) {
@@ -68,9 +77,8 @@ public class FielDao {
 
 	public void atualizarFiel(Fiel fiel) {
 
-
 		em.getTransaction().begin();
-		em.persist(fiel);
+		em.merge(fiel);
 		em.getTransaction().commit();
 	}
 }

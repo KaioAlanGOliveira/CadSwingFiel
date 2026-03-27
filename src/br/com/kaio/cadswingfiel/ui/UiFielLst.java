@@ -66,7 +66,8 @@ public class UiFielLst {
 
 		table = new JTable();
 		scrollPane.setViewportView(table);
-		table.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "Id", "CPF", "Nome" }));
+		table.setModel(
+				new DefaultTableModel(new Object[][] {}, new String[] { "Id", "CPF", "Nome", "Telefone", "Email" }));
 		table.setDefaultEditor(Object.class, null);
 		table.addMouseListener(new MouseAdapter() {
 			@Override
@@ -76,8 +77,6 @@ public class UiFielLst {
 					int linha = table.getSelectedRow();
 					if (linha != -1) {
 						carregarFielNoFormulario(linha);
-						UiFielFrm window = new UiFielFrm();
-						window.show(null);
 					}
 				}
 
@@ -112,18 +111,20 @@ public class UiFielLst {
 		JButton btnPesq = new JButton("Pesquisar");
 		btnPesq.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+
 				String nome = txtNome.getText();
 				String cpf = txtCpf.getText();
 
 				FielDao dao = new FielDao();
 
 				try {
+
 					List<Fiel> lista = dao.buscarPorFiltro(cpf, nome);
 					DefaultTableModel modelo = (DefaultTableModel) table.getModel();
 					modelo.setRowCount(0);
 
 					for (Fiel fe : lista) {
-						Object[] linha = { fe.getId(), fe.getCpf(), fe.getNome() };
+						Object[] linha = { fe.getId(), fe.getCpf(), fe.getNome(), fe.getTelefone(), fe.getEmail() };
 						modelo.addRow(linha);
 					}
 				} catch (Exception e1) {
@@ -141,10 +142,18 @@ public class UiFielLst {
 		Long id = (Long) table.getValueAt(linha, 0);
 		String cpf = (String) table.getValueAt(linha, 1);
 		String nome = (String) table.getValueAt(linha, 2);
+		String telefone = (String) table.getValueAt(linha, 3);
+		String email = (String) table.getValueAt(linha, 4);
 
 		UiFielFrm frm = new UiFielFrm();
-        frm.carregarDadosParaEdicao(id, cpf, nome);   // método que vamos criar no UiFielFrm
-        frm.show(null);
+		frm.carregarDadosParaEdicao(id, cpf, nome, telefone, email);
+		frm.show(null);
+	}
+
+	public void showFrm() {
+
+		UiFielFrm window = new UiFielFrm();
+		window.show(null);
 	}
 
 	public void show(JFrame framePai) {

@@ -49,16 +49,16 @@ public class UiFielFrm {
 
 		// Nome
 		JLabel lblNome = new JLabel("Nome:");
-		lblNome.setBounds(28, 86, 80, 20);
+		lblNome.setBounds(150, 59, 422, 20);
 		raiz.add(lblNome);
 
 		txtNome = new JTextField();
-		txtNome.setBounds(28, 109, 544, 28);
+		txtNome.setBounds(150, 82, 422, 28);
 		raiz.add(txtNome);
 
 		// CPF
 		JLabel lblCpf = new JLabel("CPF:");
-		lblCpf.setBounds(28, 25, 80, 20);
+		lblCpf.setBounds(28, 59, 80, 20);
 		raiz.add(lblCpf);
 
 		try {
@@ -68,7 +68,7 @@ public class UiFielFrm {
 		} catch (ParseException e) {
 			txtCpf = new JFormattedTextField();
 		}
-		txtCpf.setBounds(28, 48, 134, 28);
+		txtCpf.setBounds(28, 82, 112, 28);
 		raiz.add(txtCpf);
 
 		// Telefone
@@ -83,16 +83,16 @@ public class UiFielFrm {
 		} catch (ParseException e) {
 			txtTelefone = new JFormattedTextField();
 		}
-		txtTelefone.setBounds(28, 172, 200, 28);
+		txtTelefone.setBounds(28, 172, 112, 28);
 		raiz.add(txtTelefone);
 
 		// Email
 		JLabel lblEmail = new JLabel("E-mail:");
-		lblEmail.setBounds(250, 149, 80, 20);
+		lblEmail.setBounds(150, 149, 80, 20);
 		raiz.add(lblEmail);
 
 		txtEmail = new JTextField();
-		txtEmail.setBounds(250, 172, 322, 28);
+		txtEmail.setBounds(150, 172, 422, 28);
 		raiz.add(txtEmail);
 
 		// ==================== BOTÕES ====================
@@ -114,7 +114,14 @@ public class UiFielFrm {
 
 		btnApagar = new JButton("Apagar");
 		btnApagar.setBounds(590, 221, 120, 28);
-		btnApagar.addActionListener(e -> apagar());
+		btnApagar.addActionListener(e -> {
+			try {
+				apagar();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
 		raiz.add(btnApagar);
 
 		btnCancelar = new JButton("Cancelar");
@@ -127,7 +134,8 @@ public class UiFielFrm {
 		btnFechar.addActionListener(e -> dialog.dispose());
 		raiz.add(btnFechar);
 
-		habilitarControles(true); // inicia desabilitado
+		habilitarControles(true);
+
 	}
 
 	// ====================== MÉTODOS ======================
@@ -162,7 +170,7 @@ public class UiFielFrm {
 				dao.adicionarFiel(fiel);
 				mensagem("Fiel cadastrado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
 			} else {
-				 dao.atualizarFiel(fiel);
+				dao.atualizarFiel(fiel);
 				mensagem("Fiel atualizado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
 			}
 			habilitarControles(false);
@@ -178,13 +186,23 @@ public class UiFielFrm {
 		habilitarControles(true);
 	}
 
-	private void apagar() {
-		mensagem("Funcionalidade de Apagar em desenvolvimento...", JOptionPane.INFORMATION_MESSAGE);
+	private void apagar() throws Exception {
+
+		String cpfLimpo = txtCpf.getText().trim().replace(".", "").replace("-", "").replace("/", "");
+
+		FielDao dao = new FielDao();
+		dao.removerFiel(cpfLimpo);
+
+		mensagem("Apagado!.", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	private void cancelar() {
-		limparCampos();
-		habilitarControles(false);
+		if (!modoEdicao) {
+			limparCampos();
+			habilitarControles(false);
+		} else {
+			dialog.setVisible(false);
+		}
 	}
 
 	public boolean validarFrm() {
@@ -264,14 +282,16 @@ public class UiFielFrm {
 		JOptionPane.showMessageDialog(dialog, msg, titulo, tipo);
 	}
 
-	public void carregarDadosParaEdicao(Long id, String cpf, String nome) {
+	public void carregarDadosParaEdicao(Long id, String cpf, String nome, String telefone, String email) {
 //		this.idAtual = id; // crie o atributo private Long idAtual;
 		this.modoEdicao = false;
 
 		txtCpf.setText(cpf);
 		txtNome.setText(nome);
+		txtTelefone.setText(telefone);
+		txtEmail.setText(email);
 
-		habilitarControles(true);
-		btnSalvar.setText("Atualizar"); // muda o texto do botão
+		habilitarControles(false);
+//		btnSalvar.setText("Atualizar"); // muda o texto do botão
 	}
 }
