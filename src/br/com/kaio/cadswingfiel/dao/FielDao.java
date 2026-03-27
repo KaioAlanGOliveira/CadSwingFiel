@@ -41,7 +41,6 @@ public class FielDao {
 
 			em.createQuery("DELETE FROM Pagamento p WHERE p.id.cpf = :cpf").setParameter("cpf", cpf.trim())
 					.executeUpdate();
-
 			int registrosDeletados = em.createQuery("DELETE FROM Fiel f WHERE f.cpf = :cpf")
 					.setParameter("cpf", cpf.trim()).executeUpdate();
 

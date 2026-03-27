@@ -17,7 +17,7 @@ import javax.swing.text.MaskFormatter;
 import br.com.kaio.cadswingfiel.dao.FielDao;
 import br.com.kaio.cadswingfiel.domain.Fiel;
 
-public class UiFielFrm {
+public class UiPagamentoFrm {
 
 	private JDialog dialog;
 	private JPanel raiz;
@@ -37,7 +37,7 @@ public class UiFielFrm {
 
 	private boolean modoEdicao = true;
 
-	public UiFielFrm() {
+	public UiPagamentoFrm() {
 		inicializarComponentes();
 	}
 
@@ -319,15 +319,14 @@ public class UiFielFrm {
 		JOptionPane.showMessageDialog(dialog, msg, titulo, tipo);
 	}
 
-//	, String telefone, String email
-	public void carregarDadosParaEdicao(Long id, String cpf, String nome) {
+	public void carregarDadosParaEdicao(Long id, String cpf, String nome, String telefone, String email) {
 		this.idAtual = id; // crie o atributo private Long idAtual;
 		this.modoEdicao = false;
 
 		txtCpf.setText(cpf);
 		txtNome.setText(nome);
-//		txtTelefone.setText(telefone);
-//		txtEmail.setText(email);
+		txtTelefone.setText(telefone);
+		txtEmail.setText(email);
 
 		habilitarControles(false);
 //		btnSalvar.setText("Atualizar"); // muda o texto do botão

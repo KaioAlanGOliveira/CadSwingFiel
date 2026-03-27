@@ -4,6 +4,7 @@ import java.util.List;
 
 import br.com.kaio.cadswingfiel.domain.Pagamento;
 import br.com.kaio.cadswingfiel.domain.PagamentoId;
+import br.com.kaio.cadswingfiel.domain.PagamentoView;
 //import br.com.kaio.cadswingfiel.domain.PagamentoView;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -98,13 +99,23 @@ public class PagamentoDao {
 		return query.getResultList();
 	}
 
+	public List<PagamentoView> buscarPorFiltro(String cpf, String nome) throws Exception {
+		try {
+			String jpql = """
+					  SELECT f FROM PagamentoView f
+					           WHERE (:cpf = '' OR f.id.cpf = :cpf)
+					           AND (:nome = '' OR f.nome LIKE :nome)
+					""";
+			TypedQuery<PagamentoView> query = em.createQuery(jpql, PagamentoView.class);
+			query.setParameter("cpf", cpf != null ? cpf.trim() : "");
+			query.setParameter("nome", (nome != null && !nome.trim().isEmpty()) ? "%" + nome.trim() + "%" : "");
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException("Erro ao listar fiéis", e);
+		}
+	}
 }
 
-
-
-
-
-//
 //public List<PagamentoView> listarDizimistas() {
 //	String sql = "SELECT fw FROM PagamentoView  fw";
 //	TypedQuery<PagamentoView> typedQuery = em.createQuery(sql, PagamentoView.class);

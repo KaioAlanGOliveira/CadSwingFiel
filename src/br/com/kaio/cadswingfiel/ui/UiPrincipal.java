@@ -1,19 +1,36 @@
 package br.com.kaio.cadswingfiel.ui;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 public class UiPrincipal {
 
 	private JFrame frame;
-
-	// 🎨 Cores refinadas para Nimbus
-	private final Color COR_PRIMARIA = new Color(0, 120, 215);
-	private final Color COR_TEXTO =  new Color(60, 60, 60);
+	private final Color PRIMARY_COLOR = new Color(41, 98, 255);
+	private final Color BACKGROUND_COLOR = new Color(248, 249, 250);
+	private final Color TEXT_COLOR = new Color(33, 37, 41);
+	private final Color SECONDARY_TEXT = new Color(108, 117, 125);
+	private final Color BORDER_COLOR = new Color(222, 226, 230);
 
 	public UiPrincipal() {
 		setNimbusLookAndFeel();
@@ -28,13 +45,12 @@ public class UiPrincipal {
 					break;
 				}
 			}
-
-			// 🎨 Customizando Nimbus
-			UIManager.put("control", new Color(245, 245, 245));
-			UIManager.put("nimbusBase", COR_PRIMARIA);
-			UIManager.put("nimbusFocus", COR_PRIMARIA);
-			UIManager.put("text", COR_TEXTO);
-
+			UIManager.put("control", BACKGROUND_COLOR);
+			UIManager.put("nimbusBase", PRIMARY_COLOR);
+			UIManager.put("nimbusFocus", PRIMARY_COLOR);
+			UIManager.put("nimbusBlueGrey", BACKGROUND_COLOR);
+			UIManager.put("text", TEXT_COLOR);
+			UIManager.put("MenuBar.background", Color.WHITE);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -45,80 +61,73 @@ public class UiPrincipal {
 		frame.setSize(1100, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationRelativeTo(null);
-		frame.setLayout(new BorderLayout());
+		frame.getContentPane().setLayout(new BorderLayout());
 
-		// 🔝 MENU
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.setBorder(new EmptyBorder(5, 10, 5, 10));
-		frame.setJMenuBar(menuBar);
+		menuBar.setBackground(Color.WHITE);
+		menuBar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, BORDER_COLOR));
 
 		JMenu mnCadastros = new JMenu("Cadastros");
 		mnCadastros.setMnemonic(KeyEvent.VK_C);
-		menuBar.add(mnCadastros);
 
 		JMenuItem mntmFiel = new JMenuItem("Fiel");
 		mntmFiel.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
-		mntmFiel.addActionListener(e -> {
-			UiFielLst ui = new UiFielLst();
-			ui.show(frame);
-		});
-		mnCadastros.add(mntmFiel);
+		mntmFiel.addActionListener(e -> new UiFielLst().show(frame));
 
+		mnCadastros.add(mntmFiel);
 		mnCadastros.addSeparator();
 
-		JMenuItem mntmPagamento = new JMenuItem("Pagamentos");
-		mnCadastros.add(mntmPagamento);
+		JMenuItem menuPagamento = new JMenuItem("Pagamentos");
+		menuPagamento.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK));
+		menuPagamento.addActionListener(e -> new UiPagamentoLst().show(frame));
+		mnCadastros.add(menuPagamento);
 
 		JMenu mnAjuda = new JMenu("Ajuda");
+		mnAjuda.add(new JMenuItem("Sobre o Sistema"));
+
+		menuBar.add(mnCadastros);
 		menuBar.add(mnAjuda);
+		frame.setJMenuBar(menuBar);
 
-		JMenuItem mntmSobre = new JMenuItem("Sobre o Sistema");
-		mnAjuda.add(mntmSobre);
-
-		// 🧱 PAINEL CENTRAL (TELA DE BOAS-VINDAS)
 		JPanel panelCentral = new JPanel(new GridBagLayout());
-		panelCentral.setBackground(new Color(245, 245, 245));
+		panelCentral.setBackground(BACKGROUND_COLOR);
 
 		JPanel card = new JPanel();
 		card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
 		card.setBackground(Color.WHITE);
-		card.setBorder(BorderFactory.createCompoundBorder(
-				BorderFactory.createLineBorder(new Color(220, 220, 220)),
-				new EmptyBorder(40, 60, 40, 60)
-		));
+		card.setBorder(BorderFactory.createCompoundBorder(new LineBorder(BORDER_COLOR, 1, true),
+				new EmptyBorder(50, 80, 50, 80)));
 
-		// 🏷️ Título principal
 		JLabel lblTitulo = new JLabel("Bem-vindo ao Sistema");
-		lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 32));
-		lblTitulo.setForeground(COR_PRIMARIA);
+		lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 34));
+		lblTitulo.setForeground(PRIMARY_COLOR);
 		lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		// 📝 Subtítulo
-		JLabel lblSub = new JLabel("Gerencie fiéis e pagamentos com facilidade");
-		lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblSub.setForeground(COR_TEXTO);
+		JLabel lblSub = new JLabel("Gerencie fiéis e pagamentos com precisão");
+		lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		lblSub.setForeground(TEXT_COLOR);
 		lblSub.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		// 📌 Dica de uso
-		JLabel lblDica = new JLabel("Use o menu acima para começar");
-		lblDica.setFont(new Font("Segoe UI", Font.ITALIC, 14));
-		lblDica.setForeground(Color.GRAY);
+		JLabel lblDica = new JLabel("Selecione uma opção no menu superior para navegar");
+		lblDica.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		lblDica.setForeground(SECONDARY_TEXT);
 		lblDica.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		// Espaçamento
 		card.add(lblTitulo);
-		card.add(Box.createRigidArea(new Dimension(0, 15)));
+		card.add(Box.createRigidArea(new Dimension(0, 10)));
 		card.add(lblSub);
-		card.add(Box.createRigidArea(new Dimension(0, 25)));
+		card.add(Box.createRigidArea(new Dimension(0, 30)));
 		card.add(lblDica);
 
 		panelCentral.add(card);
-		frame.add(panelCentral, BorderLayout.CENTER);
+		frame.getContentPane().add(panelCentral, BorderLayout.CENTER);
 
-		// 🔻 STATUS BAR
-		JLabel lblStatus = new JLabel("  Sistema Ativo | v1.0");
-		lblStatus.setBorder(new EmptyBorder(5, 10, 5, 10));
-		frame.add(lblStatus, BorderLayout.SOUTH);
+		JLabel lblStatus = new JLabel("  Pronto para uso | Versão 1.0.0");
+		lblStatus.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		lblStatus.setForeground(SECONDARY_TEXT);
+		lblStatus.setPreferredSize(new Dimension(frame.getWidth(), 30));
+		lblStatus.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, BORDER_COLOR));
+		frame.getContentPane().add(lblStatus, BorderLayout.SOUTH);
 	}
 
 	public void setVisible(boolean b) {
