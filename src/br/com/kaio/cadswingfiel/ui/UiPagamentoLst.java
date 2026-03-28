@@ -146,7 +146,7 @@ public class UiPagamentoLst {
 //		String email = (String) table.getValueAt(linha, 4);
 //		, telefone, email
 		
-		UiFielFrm frm = new UiFielFrm();
+		UiPagamentoFrm frm = new UiPagamentoFrm();
 		frm.carregarDadosParaEdicao(id, cpf, nome);
 		frm.show(null);
 	}

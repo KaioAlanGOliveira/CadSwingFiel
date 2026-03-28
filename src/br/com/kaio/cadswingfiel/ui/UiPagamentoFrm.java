@@ -235,10 +235,10 @@ public class UiPagamentoFrm {
 				.replace(" ", "");
 
 		if (!cpfLimpo.matches("\\d{11}")) {
-		    mensagem("CPF inválido!", JOptionPane.WARNING_MESSAGE);
-		    return false;
+			mensagem("CPF inválido!", JOptionPane.WARNING_MESSAGE);
+			return false;
 		}
-		
+
 		if (cpfLimpo.isEmpty()) {
 			mensagem("O campo CPF é obrigatório!", JOptionPane.WARNING_MESSAGE);
 			txtCpf.requestFocus();
@@ -280,9 +280,9 @@ public class UiPagamentoFrm {
 
 		Fiel fiel = new Fiel();
 		fiel.setId(idAtual);
-		fiel.setCpf(cpfLimpo); 
+		fiel.setCpf(cpfLimpo);
 		fiel.setNome(txtNome.getText().trim());
-		fiel.setTelefone(telefoneLimpo); 
+		fiel.setTelefone(telefoneLimpo);
 		fiel.setEmail(txtEmail.getText().trim());
 
 		return fiel;
@@ -319,14 +319,14 @@ public class UiPagamentoFrm {
 		JOptionPane.showMessageDialog(dialog, msg, titulo, tipo);
 	}
 
-	public void carregarDadosParaEdicao(Long id, String cpf, String nome, String telefone, String email) {
+	public void carregarDadosParaEdicao(Long id, String cpf, String nome) {
 		this.idAtual = id; // crie o atributo private Long idAtual;
 		this.modoEdicao = false;
 
 		txtCpf.setText(cpf);
 		txtNome.setText(nome);
-		txtTelefone.setText(telefone);
-		txtEmail.setText(email);
+//		txtTelefone.setText(telefone);
+//		txtEmail.setText(email);
 
 		habilitarControles(false);
 //		btnSalvar.setText("Atualizar"); // muda o texto do botão
