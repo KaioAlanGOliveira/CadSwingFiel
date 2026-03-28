@@ -79,7 +79,6 @@ public class Fiel {
 	// Opcional: toString() para debug
 	@Override
 	public String toString() {
-		return "Fiel{" + "id=" + id + ", nome='" + nome + '\'' + ", cpf=" + cpf + ", telefone='" + telefone + '\''
-				+ '}';
+		return cpf ;
 	}
 }

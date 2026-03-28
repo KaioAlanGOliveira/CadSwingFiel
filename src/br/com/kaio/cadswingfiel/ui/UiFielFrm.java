@@ -175,7 +175,6 @@ public class UiFielFrm {
 				mensagem("Fiel atualizado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
 			}
 			habilitarControles(false);
-			limparCampos();
 		} catch (Exception ex) {
 			mensagem("Erro ao salvar: " + ex.getMessage(), JOptionPane.ERROR_MESSAGE);
 		}

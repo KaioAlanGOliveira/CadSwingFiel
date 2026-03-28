@@ -18,6 +18,13 @@ public class CadSwingFiel {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		try {
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {

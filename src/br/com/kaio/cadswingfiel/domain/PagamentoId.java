@@ -11,7 +11,7 @@ public class PagamentoId {
 	@Column(name = "cpf", length = 14)
 	private String cpf;
 
-	@Column(name = "dizimo_id")
+	@Column(name = "cod_pagamento")
 	private Integer codPagamento;
 
 	public String getCpf() {

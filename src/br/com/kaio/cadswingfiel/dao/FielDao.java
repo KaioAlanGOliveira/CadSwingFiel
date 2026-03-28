@@ -11,13 +11,12 @@ import jakarta.persistence.TypedQuery;
 
 public class FielDao {
 
-	private EntityManagerFactory emf = Persistence.createEntityManagerFactory("fielPersistenceUnit");
-	private EntityManager em = emf.createEntityManager();
 
 	public List<Fiel> listarFiel() {
 
 		String sql = "SELECT f FROM Fiel f";
 		try {
+			
 			TypedQuery<Fiel> typedQuery = em.createQuery(sql, Fiel.class);
 			return typedQuery.getResultList();
 		} catch (Exception e) {

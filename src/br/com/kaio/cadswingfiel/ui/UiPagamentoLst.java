@@ -28,7 +28,6 @@ public class UiPagamentoLst {
 	private JPanel raiz;
 	private JTable table;
 	private JScrollPane scrollPane;
-	private final Label label_1 = new Label("Lista de pagamento");
 	private JTextField txtNome;
 	private JTextField txtCpf;
 
@@ -48,7 +47,7 @@ public class UiPagamentoLst {
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						try {
-							UiFielFrm window = new UiFielFrm();
+							UiPagamentoFrm window = new UiPagamentoFrm();
 							window.show(null);
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -66,8 +65,7 @@ public class UiPagamentoLst {
 
 		table = new JTable();
 		scrollPane.setViewportView(table);
-		table.setModel(
-				new DefaultTableModel(new Object[][] {}, new String[] { "Id", "CPF", "Nome"}));
+		table.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "CPF", "Nome", "Valor" }));
 		table.setDefaultEditor(Object.class, null);
 		table.addMouseListener(new MouseAdapter() {
 			@Override
@@ -87,8 +85,6 @@ public class UiPagamentoLst {
 		label.setFont(new Font("Dialog", Font.ITALIC, 12));
 		label.setBounds(23, 122, 62, 22);
 		raiz.add(label);
-		label_1.setBounds(23, 0, 77, 22);
-		raiz.add(label_1);
 
 		txtNome = new JTextField();
 		txtNome.setColumns(10);
@@ -124,7 +120,7 @@ public class UiPagamentoLst {
 					modelo.setRowCount(0);
 
 					for (PagamentoView fe : lista) {
-						Object[] linha = { fe.getId(), fe.getId().getCpf(), fe.getNome()};
+						Object[] linha = { fe.getId().getCpf(), fe.getNome(), fe.getValor() };
 						modelo.addRow(linha);
 					}
 				} catch (Exception e1) {
@@ -145,7 +141,7 @@ public class UiPagamentoLst {
 //		String telefone = (String) table.getValueAt(linha, 3);
 //		String email = (String) table.getValueAt(linha, 4);
 //		, telefone, email
-		
+
 		UiPagamentoFrm frm = new UiPagamentoFrm();
 		frm.carregarDadosParaEdicao(id, cpf, nome);
 		frm.show(null);
@@ -159,7 +155,7 @@ public class UiPagamentoLst {
 
 	public void show(JFrame framePai) {
 
-		JDialog dialog = new JDialog(framePai, true);
+		JDialog dialog = new JDialog(framePai, "Lista pagamento", true);
 		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		dialog.setContentPane(raiz);
 		dialog.pack();
