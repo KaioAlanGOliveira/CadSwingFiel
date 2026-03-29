@@ -6,96 +6,71 @@ import br.com.kaio.cadswingfiel.domain.Fiel;
 import br.com.kaio.cadswingfiel.persistence.EmFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.TypedQuery;
 
 public class FielDao {
 
-	public List<Fiel> listarFiel() {
-
-		EntityManager em = EmFactory.getEm();
-		String sql = "SELECT f FROM Fiel f";
-		
-		try {
-
-			TypedQuery<Fiel> typedQuery = em.createQuery(sql, Fiel.class);
-			return typedQuery.getResultList();
-		} catch (Exception e) {
-			System.out.println(e);
-			return null;
-		}
+	private EntityManager getManager() {
+		return EmFactory.getEm();
 	}
 
-	public void removerFiel(String cpf) throws Exception {
-
-		EntityManager em = EmFactory.getEm();
-		if (cpf == null || cpf.trim().isEmpty()) {
-			
-			throw new Exception("CPF não pode ser vazio.");
-		}
-
-		EntityTransaction tx = em.getTransaction();
-
-		try {
-			
-			tx.begin();
-
-			em.createQuery("DELETE FROM Pagamento p WHERE p.id.cpf = :cpf").setParameter("cpf", cpf.trim())
-					.executeUpdate();
-			int registrosDeletados = em.createQuery("DELETE FROM Fiel f WHERE f.cpf = :cpf")
-					.setParameter("cpf", cpf.trim()).executeUpdate();
-
-			tx.commit();
-
-			if (registrosDeletados == 0) {
-				
-				throw new Exception("Fiel não encontrado com o CPF: " + cpf);
-			}
-
-		} catch (Exception e) {
-			
-			if (tx != null && tx.isActive()) {
-				
-				try {
-					tx.rollback();
-				} catch (Exception ex) {
-				}
-			}
-			throw new Exception("Erro ao remover o fiel: " + e.getMessage(), e);
-		}
+	public List<Fiel> listarFiel() {
+		String jpql = "SELECT f FROM Fiel f";
+		return getManager().createQuery(jpql, Fiel.class).getResultList();
 	}
 
 	public void adicionarFiel(Fiel novo) {
-
-		EntityManager em = EmFactory.getEm();
-		em.getTransaction().begin();
-		em.persist(novo);
-		em.getTransaction().commit();
-
-	}
-
-	public List<Fiel> buscarPorFiltro(String cpf, String nome) throws Exception {
-
-		EntityManager em = EmFactory.getEm();
-		try {
-			String jpql = """
-					  SELECT f FROM Fiel f
-					           WHERE (:cpf = '' OR f.cpf = :cpf)
-					           AND (:nome = '' OR f.nome LIKE :nome)
-					""";
-			TypedQuery<Fiel> query = em.createQuery(jpql, Fiel.class);
-			query.setParameter("cpf", cpf != null ? cpf.trim() : "");
-			query.setParameter("nome", (nome != null && !nome.trim().isEmpty()) ? "%" + nome.trim() + "%" : "");
-			return query.getResultList();
-		} catch (Exception e) {
-			throw new RuntimeException("Erro ao listar fiéis", e);
-		}
+		executeInTransaction(() -> getManager().persist(novo));
 	}
 
 	public void atualizarFiel(Fiel fiel) {
+		executeInTransaction(() -> getManager().merge(fiel));
+	}
 
-		EntityManager em = EmFactory.getEm();
-		em.getTransaction().begin();
-		em.merge(fiel);
-		em.getTransaction().commit();
+	public void removerFiel(String cpf) throws Exception {
+		if (cpf == null || cpf.isBlank()) {
+			throw new IllegalArgumentException("CPF não pode ser vazio.");
+		}
+
+		executeInTransaction(() -> {
+			String cleanCpf = cpf.trim();
+
+			// Remove pagamentos primeiro (pela restrição de chave estrangeira)
+			getManager().createQuery("DELETE FROM Pagamento p WHERE p.id.cpf = :cpf").setParameter("cpf", cleanCpf)
+					.executeUpdate();
+
+			int deletados = getManager().createQuery("DELETE FROM Fiel f WHERE f.cpf = :cpf")
+					.setParameter("cpf", cleanCpf).executeUpdate();
+
+			if (deletados == 0) {
+				throw new RuntimeException("Fiel não encontrado com o CPF: " + cleanCpf);
+			}
+		});
+	}
+
+	public List<Fiel> buscarPorFiltro(String cpf, String nome) {
+		String jpql = """
+				  SELECT f FROM Fiel f
+				  WHERE (:cpf = '' OR f.cpf = :cpf)
+				  AND (:nome = '' OR f.nome LIKE :nome)
+				""";
+
+		return getManager().createQuery(jpql, Fiel.class).setParameter("cpf", cpf != null ? cpf.trim() : "")
+				.setParameter("nome", (nome != null && !nome.isBlank()) ? "%" + nome.trim() + "%" : "").getResultList();
+	}
+
+	/**
+	 * Método utilitário para envolver operações em transações de forma segura.
+	 */
+	private void executeInTransaction(Runnable action) {
+		EntityTransaction tx = getManager().getTransaction();
+		try {
+			tx.begin();
+			action.run();
+			tx.commit();
+		} catch (Exception e) {
+			if (tx.isActive())
+				tx.rollback();
+			throw e;
+		}
 	}
 }

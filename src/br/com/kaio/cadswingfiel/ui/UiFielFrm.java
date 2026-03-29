@@ -168,9 +168,12 @@ public class UiFielFrm {
 
 		try {
 			if (modoEdicao) {
+				
 				dao.adicionarFiel(fiel);
 				mensagem("Fiel cadastrado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
+
 			} else {
+				
 				dao.atualizarFiel(fiel);
 				mensagem("Fiel atualizado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
 			}
@@ -182,7 +185,7 @@ public class UiFielFrm {
 
 	private void alterar() {
 
-		modoEdicao = false;
+		this.modoEdicao = false;
 		txtCpf.setEnabled(false);
 		habilitarControles(true);
 	}
