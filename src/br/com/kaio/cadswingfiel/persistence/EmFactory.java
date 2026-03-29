@@ -8,15 +8,14 @@ public class EmFactory {
 
 	private static EntityManager em;
 
-	public static em getEm() {
+	public static EntityManager getEm() {
 
 		if (em == null) {
+
 			EntityManagerFactory emf = Persistence.createEntityManagerFactory("fielPersistenceUnit");
 			emf.createEntityManager();
 		}
 
-	} 
-
-	
-	return em
+		return em;
+	}
 }
