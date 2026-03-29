@@ -9,13 +9,12 @@ public class EmFactory {
 	private static EntityManager em;
 
 	public static EntityManager getEm() {
-
+		
 		if (em == null) {
-
+			
 			EntityManagerFactory emf = Persistence.createEntityManagerFactory("fielPersistenceUnit");
-			emf.createEntityManager();
+			em = emf.createEntityManager();
 		}
-
 		return em;
 	}
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import br.com.kaio.cadswingfiel.domain.Pagamento;
 import br.com.kaio.cadswingfiel.domain.PagamentoView;
+import br.com.kaio.cadswingfiel.persistence.EmFactory;
 //import br.com.kaio.cadswingfiel.domain.PagamentoView;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -42,7 +43,10 @@ public class PagamentoDao {
 //
 	public void adicionar(Pagamento pg) throws Exception {
 
+		EntityManager em = EmFactory.getEm();
+		
 		try {
+			
 			String sql = "SELECT IFNULL(MAX(cod_pagamento) + 1, 1)AS maior_codigo FROM pagamento WHERE cpf = :cpf";
 			Query query = em.createNativeQuery(sql);
 			query.setParameter("cpf", pg.getId().getCpf());
@@ -59,15 +63,20 @@ public class PagamentoDao {
 			throw new RuntimeException("Erro ao adicionar fiel", e);
 		}
 	}
+
+//	public void atualizar(pagamento pg) throws exception {
 //
-//	public void atualizar(Pagamento pg) throws Exception {
-//
+//		entitymanager em = emfactory.getem();
+//		
 //		try {
-//			em.getTransaction().begin();
+//			
+//			em.gettransaction().begin();
 //			em.merge(pg);
-//			em.getTransaction().commit();
-//		} catch (Exception e) {
-//			throw new RuntimeException("Erro ao atualizar fiel", e);
+//			em.gettransaction().commit();
+//		} catch (exception e) {
+//			
+//			
+//			throw new runtimeexception("erro ao atualizar fiel", e);
 //		}
 //
 //	}

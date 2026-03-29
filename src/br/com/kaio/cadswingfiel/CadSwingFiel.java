@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 
 import javax.swing.UIManager;
 
+import br.com.kaio.cadswingfiel.persistence.EmFactory;
 import br.com.kaio.cadswingfiel.ui.UiPrincipal;
 
 public class CadSwingFiel {
@@ -18,13 +19,13 @@ public class CadSwingFiel {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		try {
-			
+
+			EmFactory.getEm();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -34,7 +35,7 @@ public class CadSwingFiel {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			} 
+			}
 		});
 	}
 

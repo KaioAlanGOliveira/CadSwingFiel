@@ -5,17 +5,16 @@ import java.util.List;
 import br.com.kaio.cadswingfiel.domain.Fiel;
 import br.com.kaio.cadswingfiel.persistence.EmFactory;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 
 public class FielDao {
 
 	public List<Fiel> listarFiel() {
-		
+
 		EntityManager em = EmFactory.getEm();
 		String sql = "SELECT f FROM Fiel f";
+		
 		try {
 
 			TypedQuery<Fiel> typedQuery = em.createQuery(sql, Fiel.class);
@@ -26,19 +25,18 @@ public class FielDao {
 		}
 	}
 
-	/**
-	 * Remove um Fiel e todos os seus pagamentos associados de forma segura.
-	 */
 	public void removerFiel(String cpf) throws Exception {
-		
+
 		EntityManager em = EmFactory.getEm();
 		if (cpf == null || cpf.trim().isEmpty()) {
+			
 			throw new Exception("CPF não pode ser vazio.");
 		}
 
 		EntityTransaction tx = em.getTransaction();
 
 		try {
+			
 			tx.begin();
 
 			em.createQuery("DELETE FROM Pagamento p WHERE p.id.cpf = :cpf").setParameter("cpf", cpf.trim())
@@ -49,11 +47,14 @@ public class FielDao {
 			tx.commit();
 
 			if (registrosDeletados == 0) {
+				
 				throw new Exception("Fiel não encontrado com o CPF: " + cpf);
 			}
 
 		} catch (Exception e) {
+			
 			if (tx != null && tx.isActive()) {
+				
 				try {
 					tx.rollback();
 				} catch (Exception ex) {
@@ -73,7 +74,7 @@ public class FielDao {
 	}
 
 	public List<Fiel> buscarPorFiltro(String cpf, String nome) throws Exception {
-		
+
 		EntityManager em = EmFactory.getEm();
 		try {
 			String jpql = """
