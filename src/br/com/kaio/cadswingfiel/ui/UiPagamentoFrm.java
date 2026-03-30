@@ -42,6 +42,7 @@ public class UiPagamentoFrm {
 	private boolean modoEdicao = true;
 	private JLabel lblNewLabel_2;
 	private JTextField txtNome;
+	private JTextField txtCodPg;
 
 	public UiPagamentoFrm() {
 
@@ -99,7 +100,7 @@ public class UiPagamentoFrm {
 		txtValor.setColumns(10);
 
 		cbxFiel = new JComboBox<Fiel>();
-		cbxFiel.setBounds(29, 64, 120, 28);
+		cbxFiel.setBounds(29, 64, 142, 28);
 		DefaultComboBoxModel<Fiel> model = new DefaultComboBoxModel<>();
 		List<Fiel> fieis = getFieis();
 		for (Fiel fiel : fieis) {
@@ -127,6 +128,15 @@ public class UiPagamentoFrm {
 		raiz.add(txtNome);
 		txtNome.setColumns(10);
 
+		JLabel lblNewLabel_3 = new JLabel("CodPG");
+		lblNewLabel_3.setBounds(181, 39, 46, 14);
+		raiz.add(lblNewLabel_3);
+
+		txtCodPg = new JTextField();
+		txtCodPg.setBounds(181, 64, 93, 28);
+		raiz.add(txtCodPg);
+		txtCodPg.setColumns(10);
+
 		habilitarControles(true);
 	}
 
@@ -149,7 +159,7 @@ public class UiPagamentoFrm {
 //		idAtual = null; // <-- MUITO IMPORTANTE
 		habilitarControles(true);
 		modoEdicao = true;
-		txtCpf.requestFocus();
+		cbxFiel.requestFocus();
 	}
 
 	private void salvar() {
@@ -264,6 +274,8 @@ public class UiPagamentoFrm {
 		btnApagar.setEnabled(!habilitar);
 		btnNovo.setEnabled(!habilitar);
 		btnFechar.setEnabled(!habilitar);
+
+		txtCodPg.setEnabled(false);
 	}
 
 	public void mensagem(String msg, int tipo) {
@@ -293,9 +305,9 @@ public class UiPagamentoFrm {
 
 		txtValor.setText(String.valueOf(valor));
 		txtNome.setText(nome);
+		txtCodPg.setText(String.valueOf(codPg));
 
 		habilitarControles(false);
-//		btnSalvar.setText("Atualizar"); // muda o texto do botão
 	}
 
 	private Pagamento getPagamento() {
@@ -309,7 +321,7 @@ public class UiPagamentoFrm {
 		Pagamento pg = new Pagamento();
 		pg.setId(id);
 		try {
-	
+
 			pg.setValor(Long.parseLong(txtValor.getText()));
 		} catch (NumberFormatException e) {
 			mensagem("Valor inválido!", JOptionPane.ERROR_MESSAGE);

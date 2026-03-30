@@ -141,9 +141,6 @@ public class UiPagamentoLst {
 		String cpf = (String) table.getValueAt(linha, 1);
 		String nome = (String) table.getValueAt(linha, 2);
 		double valor = Double.parseDouble(table.getValueAt(linha, 3).toString());
-//		String telefone = (String) table.getValueAt(linha, 3);
-//		String email = (String) table.getValueAt(linha, 4);
-//		, telefone, email
 
 		UiPagamentoFrm frm = new UiPagamentoFrm();
 		frm.carregarDadosParaEdicao(codPg, cpf, nome, valor);
