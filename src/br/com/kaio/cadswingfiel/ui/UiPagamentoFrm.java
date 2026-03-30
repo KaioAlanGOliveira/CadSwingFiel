@@ -7,7 +7,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -27,7 +26,7 @@ public class UiPagamentoFrm {
 	private JDialog dialog;
 	private JPanel raiz;
 
-	private JFormattedTextField txtCpf;
+//	private JFormattedTextField txtCpf;
 
 	private JButton btnNovo;
 	private JButton btnSalvar;
@@ -40,13 +39,9 @@ public class UiPagamentoFrm {
 	private JComboBox<Fiel> cbxFiel;
 
 	private boolean modoEdicao = true;
-	private JLabel lblNewLabel_2;
-	private JTextField txtNome;
 	private JTextField txtCodPg;
 	private PagamentoId id;
 
-	
-	
 	public UiPagamentoFrm() {
 
 		inicializarComponentes();
@@ -130,15 +125,6 @@ public class UiPagamentoFrm {
 		lblNewLabel_1.setBounds(29, 101, 46, 14);
 		raiz.add(lblNewLabel_1);
 
-		lblNewLabel_2 = new JLabel("Nome");
-		lblNewLabel_2.setBounds(29, 169, 46, 14);
-		raiz.add(lblNewLabel_2);
-
-		txtNome = new JTextField();
-		txtNome.setBounds(29, 194, 245, 28);
-		raiz.add(txtNome);
-		txtNome.setColumns(10);
-
 		JLabel lblNewLabel_3 = new JLabel("CodPG");
 		lblNewLabel_3.setBounds(181, 39, 46, 14);
 		raiz.add(lblNewLabel_3);
@@ -180,17 +166,18 @@ public class UiPagamentoFrm {
 			return;
 		}
 
-		Pagamento pg = getPagamento();
+		Pagamento pgAtl = getPagamentoAtualizar();
+		Pagamento pgAdd = getPagamentoAdd();
 		PagamentoDao dao = new PagamentoDao();
 
 		try {
 
 			if (modoEdicao) {
 
-				dao.adicionar(pg);
+				dao.adicionar(pgAdd);
 				mensagem("Fiel cadastrado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
 			} else {
-				dao.atualizar(pg);
+				dao.atualizar(pgAtl);
 				mensagem("Fiel atualizado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
 			}
 			habilitarControles(false);
@@ -208,15 +195,6 @@ public class UiPagamentoFrm {
 
 	private void apagar() throws Exception {
 
-		String cbxFiel = txtCpf.getText().trim().replace(".", "").replace("-", "").replace("/", "");
-
-		if (cbxFiel.isEmpty() || cbxFiel.length() != 11) {
-
-			mensagem("Informe um CPF válido para apagar!", JOptionPane.WARNING_MESSAGE);
-			txtCpf.requestFocus();
-			return;
-		}
-
 		int confirm = JOptionPane.showConfirmDialog(dialog, "Deseja realmente apagar este registro?", "Confirmação",
 				JOptionPane.YES_NO_OPTION);
 
@@ -227,8 +205,9 @@ public class UiPagamentoFrm {
 
 		try {
 
-			FielDao dao = new FielDao();
-			dao.removerFiel(cbxFiel);
+			Pagamento pg = getPagamentoAtualizar();
+			PagamentoDao dao = new PagamentoDao();
+			dao.apagar(pg);
 
 			mensagem("Fiel apagado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
 
@@ -273,6 +252,7 @@ public class UiPagamentoFrm {
 	private void limparCampos() {
 		cbxFiel.setSelectedIndex(-1);
 		txtValor.setText("");
+		txtCodPg.setText("");
 	}
 
 	public void habilitarControles(boolean habilitar) {
@@ -300,11 +280,11 @@ public class UiPagamentoFrm {
 		JOptionPane.showMessageDialog(dialog, msg, titulo, tipo);
 	}
 
-	public void carregarDadosParaEdicao(int codPg, String cpf, String nome, Double valor, PagamentoId id) {
+	public void carregarDadosParaEdicao(int codPg, String cpf, Double valor, PagamentoId id) {
 
 		this.modoEdicao = false;
 		this.id = id;
-   
+
 		for (int i = 0; i < cbxFiel.getItemCount(); i++) {
 
 			Fiel f = cbxFiel.getItemAt(i);
@@ -316,22 +296,38 @@ public class UiPagamentoFrm {
 		}
 
 		txtValor.setText(String.valueOf(valor));
-		txtNome.setText(nome);
 		txtCodPg.setText(String.valueOf(codPg));
 
 		habilitarControles(false);
 	}
 
-	private Pagamento getPagamento() throws Exception {
+	private Pagamento getPagamentoAdd() throws Exception {
 
-		PagamentoDao dao = new PagamentoDao();
-
-		Pagamento pg = dao.getPagamento(id);
-
+		Pagamento pg = new Pagamento();
+		
+		pg.setId(id);
 
 		try {
 
-			pg.setValor(Long.parseLong(txtValor.getText()));
+			pg.setValor(Double.parseDouble(txtValor.getText()));
+		} catch (NumberFormatException e) {
+			mensagem("Valor inválido!", JOptionPane.ERROR_MESSAGE);
+		}
+
+		modoEdicao = true;
+		habilitarControles(false);
+
+		return pg;
+	}
+
+	private Pagamento getPagamentoAtualizar() throws Exception {
+
+		PagamentoDao dao = new PagamentoDao();
+		Pagamento pg = dao.getPagamentoId(id);
+
+		try {
+
+			pg.setValor(Double.parseDouble(txtValor.getText()));
 		} catch (NumberFormatException e) {
 			mensagem("Valor inválido!", JOptionPane.ERROR_MESSAGE);
 		}

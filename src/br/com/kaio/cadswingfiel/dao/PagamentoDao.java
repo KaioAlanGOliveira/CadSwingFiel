@@ -18,7 +18,7 @@ public class PagamentoDao {
 	private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("fielPersistenceUnit");
 	private static EntityManager em = emf.createEntityManager();
 
-	public Pagamento getPagamento(PagamentoId id) throws Exception {
+	public Pagamento getPagamentoId(PagamentoId id) throws Exception {
 		return em.find(Pagamento.class, id);
 	}
 
@@ -79,18 +79,20 @@ public class PagamentoDao {
 		}
 
 	}
-//
-//	public void apagar(Pagamento pagamento) throws Exception {
-//
-//		try {
-//			em.getTransaction().begin();
-//			Pagamento pag = em.find(Pagamento.class, pagamento.getId());
-//			em.remove(pag);
-//			em.getTransaction().commit();
-//		} catch (Exception e) {
-//			throw new RuntimeException(e);
-//		}
-//	}
+
+	public void apagar(Pagamento pagamento) throws Exception {
+
+		EntityManager em = EmFactory.getEm();
+
+		try {
+			em.getTransaction().begin();
+			Pagamento pag = em.find(Pagamento.class, pagamento.getId());
+			em.remove(pag);
+			em.getTransaction().commit();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 //
 //	public static List<Pagamento> getLista(long cpf) {
 //
