@@ -66,7 +66,7 @@ public class UiPagamentoLst {
 		table = new JTable();
 		scrollPane.setViewportView(table);
 		table.setModel(
-				new DefaultTableModel(new Object[][] {}, new String[] { "CodPagamento", "CPF", "Nome", "Valor" }));
+				new DefaultTableModel(new Object[][] {}, new String[] {"CodPagamento", "CPF", "Nome", "Valor"}));
 		table.setDefaultEditor(Object.class, null);
 		table.addMouseListener(new MouseAdapter() {
 			@Override
@@ -122,7 +122,7 @@ public class UiPagamentoLst {
 
 					for (PagamentoView fe : lista) {
 						Object[] linha = { fe.getId().getCodPagamento(), fe.getId().getCpf(), fe.getNome(),
-								fe.getValor() };
+								fe.getValor()};
 						modelo.addRow(linha);
 					}
 				} catch (Exception e1) {
@@ -140,12 +140,14 @@ public class UiPagamentoLst {
 		int codPg = Integer.parseInt(table.getValueAt(linha, 0).toString());
 		String cpf = (String) table.getValueAt(linha, 1);
 		String nome = (String) table.getValueAt(linha, 2);
+		double valor = Double.parseDouble(table.getValueAt(linha, 3).toString());
 //		String telefone = (String) table.getValueAt(linha, 3);
 //		String email = (String) table.getValueAt(linha, 4);
 //		, telefone, email
 
 		UiPagamentoFrm frm = new UiPagamentoFrm();
-		frm.carregarDadosParaEdicao(codPg, cpf, nome);
+		frm.carregarDadosParaEdicao(codPg, cpf, nome, valor);
+		frm.getPagamento(codPg, cpf, nome, valor);
 		frm.show(null);
 	}
 

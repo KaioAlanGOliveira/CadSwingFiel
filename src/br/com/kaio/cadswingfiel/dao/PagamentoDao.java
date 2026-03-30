@@ -12,7 +12,6 @@ import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 
-
 public class PagamentoDao {
 
 	private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("fielPersistenceUnit");
@@ -44,9 +43,9 @@ public class PagamentoDao {
 	public void adicionar(Pagamento pg) throws Exception {
 
 		EntityManager em = EmFactory.getEm();
-		
+
 		try {
-			
+
 			String sql = "SELECT IFNULL(MAX(cod_pagamento) + 1, 1)AS maior_codigo FROM pagamento WHERE cpf = :cpf";
 			Query query = em.createNativeQuery(sql);
 			query.setParameter("cpf", pg.getId().getCpf());
@@ -59,27 +58,26 @@ public class PagamentoDao {
 			em.getTransaction().commit();
 
 			System.out.println("salvo");
-		} catch (Exception e)  { 
+		} catch (Exception e) {
 			throw new RuntimeException("Erro ao adicionar fiel", e);
 		}
 	}
 
-//	public void atualizar(pagamento pg) throws exception {
-//
-//		entitymanager em = emfactory.getem();
-//		
-//		try {
-//			
-//			em.gettransaction().begin();
-//			em.merge(pg);
-//			em.gettransaction().commit();
-//		} catch (exception e) {
-//			
-//			
-//			throw new runtimeexception("erro ao atualizar fiel", e);
-//		}
-//
-//	}
+	public void atualizar(Pagamento pg) throws Exception {
+
+		EntityManager em = EmFactory.getEm();
+
+		try {
+
+			em.getTransaction().begin();
+			em.merge(pg);
+			em.getTransaction().commit();
+		} catch (Exception e) {
+
+			throw new RuntimeException("erro ao atualizar fiel", e);
+		}
+
+	}
 //
 //	public void apagar(Pagamento pagamento) throws Exception {
 //
