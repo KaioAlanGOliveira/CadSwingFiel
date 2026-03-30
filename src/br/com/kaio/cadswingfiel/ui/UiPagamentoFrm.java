@@ -20,6 +20,7 @@ import br.com.kaio.cadswingfiel.dao.PagamentoDao;
 import br.com.kaio.cadswingfiel.domain.Fiel;
 import br.com.kaio.cadswingfiel.domain.Pagamento;
 import br.com.kaio.cadswingfiel.domain.PagamentoId;
+import javax.swing.JLabel;
 
 public class UiPagamentoFrm {
 
@@ -72,6 +73,7 @@ public class UiPagamentoFrm {
 		btnApagar.setBounds(310, 217, 120, 28);
 		btnApagar.addActionListener(e -> {
 			try {
+				
 				apagar();
 			} catch (Exception e1) {
 				e1.printStackTrace();
@@ -90,20 +92,29 @@ public class UiPagamentoFrm {
 		raiz.add(btnFechar);
 
 		txtValor = new JTextField();
-		txtValor.setBounds(178, 75, 86, 20);
+		txtValor.setBounds(29, 126, 245, 28);
 		raiz.add(txtValor);
 		txtValor.setColumns(10);
 
 		cbxFiel = new JComboBox<Fiel>();
-		cbxFiel.setBounds(29, 74, 120, 22);
+		cbxFiel.setBounds(29, 64, 120, 28);
 		DefaultComboBoxModel<Fiel> model = new DefaultComboBoxModel<>();
 		List<Fiel> fieis = getFieis();
 		for (Fiel fiel : fieis) {
+			
 			model.addElement(fiel);
 		}
 		cbxFiel.setModel(model);
 		cbxFiel.setSelectedIndex(-1);
 		raiz.add(cbxFiel);
+		
+		JLabel lblNewLabel = new JLabel("CPF do Fiel");
+		lblNewLabel.setBounds(29, 39, 86, 14);
+		raiz.add(lblNewLabel);
+		
+		JLabel lblNewLabel_1 = new JLabel("Nome");
+		lblNewLabel_1.setBounds(29, 101, 46, 14);
+		raiz.add(lblNewLabel_1);
 
 		habilitarControles(true);
 	}
@@ -122,6 +133,7 @@ public class UiPagamentoFrm {
 	}
 
 	private void novoRegistro() {
+		
 		limparCampos();
 //		idAtual = null; // <-- MUITO IMPORTANTE
 		habilitarControles(true);
@@ -130,8 +142,9 @@ public class UiPagamentoFrm {
 	}
 
 	private void salvar() {
-		
+
 		if (!validarFrm()) {
+			
 			return;
 		}
 
@@ -139,7 +152,9 @@ public class UiPagamentoFrm {
 		PagamentoDao dao = new PagamentoDao();
 
 		try {
+			
 			if (!modoEdicao) {
+				
 				dao.adicionar(pg);
 				mensagem("Fiel cadastrado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
 			} else {
@@ -164,6 +179,7 @@ public class UiPagamentoFrm {
 		String cpfLimpo = txtCpf.getText().trim().replace(".", "").replace("-", "").replace("/", "");
 
 		if (cpfLimpo.isEmpty() || cpfLimpo.length() != 11) {
+			
 			mensagem("Informe um CPF válido para apagar!", JOptionPane.WARNING_MESSAGE);
 			txtCpf.requestFocus();
 			return;
@@ -173,10 +189,12 @@ public class UiPagamentoFrm {
 				JOptionPane.YES_NO_OPTION);
 
 		if (confirm != JOptionPane.YES_OPTION) {
+			
 			return;
 		}
 
 		try {
+			
 			FielDao dao = new FielDao();
 			dao.removerFiel(cpfLimpo);
 
@@ -192,6 +210,7 @@ public class UiPagamentoFrm {
 
 	private void cancelar() {
 		if (!modoEdicao) {
+			
 			limparCampos();
 			habilitarControles(false);
 		} else {
@@ -202,6 +221,7 @@ public class UiPagamentoFrm {
 	public boolean validarFrm() {
 
 		if (txtValor.getText().trim().isEmpty()) {
+			
 			mensagem("O campo Nome é obrigatório!", JOptionPane.WARNING_MESSAGE);
 			txtValor.requestFocus();
 			return false;
@@ -235,6 +255,7 @@ public class UiPagamentoFrm {
 	}
 
 	public void mensagem(String msg, int tipo) {
+		
 		String titulo = switch (tipo) {
 		case JOptionPane.ERROR_MESSAGE -> "Erro";
 		case JOptionPane.WARNING_MESSAGE -> "Atenção";
@@ -244,21 +265,27 @@ public class UiPagamentoFrm {
 		JOptionPane.showMessageDialog(dialog, msg, titulo, tipo);
 	}
 
-	public void carregarDadosParaEdicao(Long id, String cpf, String nome) {
-//		this.idAtual = id; // crie o atributo private Long idAtual;
+	public void carregarDadosParaEdicao(int codPg, String cpf, String nome) {
+
 		this.modoEdicao = false;
 
-		txtCpf.setText(cpf);
+		for (int i = 0; i < cbxFiel.getItemCount(); i++) {
+			
+			Fiel f = cbxFiel.getItemAt(i);
+			if (f.getCpf().equals(cpf)) {
+				
+				cbxFiel.setSelectedItem(f); // Seleciona o objeto inteiro
+				break;
+			}
+		}
 		txtValor.setText(nome);
-//		txtTelefone.setText(telefone);
-//		txtEmail.setText(email);
 
 		habilitarControles(false);
 //		btnSalvar.setText("Atualizar"); // muda o texto do botão
 	}
 
 	private Pagamento getPagamento() {
-		
+
 		PagamentoId id = new PagamentoId();
 		Fiel selecionado = (Fiel) cbxFiel.getSelectedItem();
 		String cpf = selecionado.getCpf();
@@ -274,8 +301,7 @@ public class UiPagamentoFrm {
 
 		modoEdicao = false;
 		habilitarControles(false);
-		
+
 		return pg;
 	}
-
 }

@@ -1,11 +1,11 @@
-package br.com.kaio.cadswingfiel.service;
+package br.com.kaio.cadswingfiel.bss;
 
 import java.util.List;
 
 import br.com.kaio.cadswingfiel.dao.FielDao;
 import br.com.kaio.cadswingfiel.domain.Fiel;
 
-public class FielService {
+public class FielBss {
 
 	private final FielDao dao = new FielDao();
 
