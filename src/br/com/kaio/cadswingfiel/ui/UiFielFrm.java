@@ -163,17 +163,17 @@ public class UiFielFrm {
 			return;
 		}
 
-		Fiel fiel = fiel();
+		Fiel fiel = getFiel();
 		FielDao dao = new FielDao();
 
 		try {
 			if (modoEdicao) {
-				
+
 				dao.adicionarFiel(fiel);
 				mensagem("Fiel cadastrado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
 
 			} else {
-				
+
 				dao.atualizarFiel(fiel);
 				mensagem("Fiel atualizado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
 			}
@@ -273,7 +273,7 @@ public class UiFielFrm {
 		return true;
 	}
 
-	public Fiel fiel() {
+	public Fiel getFiel() {
 
 		String cpfLimpo = txtCpf.getText().trim().replace(".", "").replace("-", "").replace("/", "");
 
@@ -323,7 +323,7 @@ public class UiFielFrm {
 
 //	, String telefone, String email
 	public void carregarDadosParaEdicao(Long id, String cpf, String nome, String telefone, String email) {
-		this.idAtual = id; // crie o atributo private Long idAtual;
+		this.idAtual = id;
 		this.modoEdicao = false;
 
 		txtCpf.setText(cpf);
@@ -332,6 +332,6 @@ public class UiFielFrm {
 		txtEmail.setText(email);
 
 		habilitarControles(false);
-//		btnSalvar.setText("Atualizar"); // muda o texto do botão
+		btnSalvar.setText("Atualizar"); // muda o texto do botão
 	}
 }

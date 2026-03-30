@@ -59,7 +59,7 @@ public class PagamentoDao {
 			em.getTransaction().commit();
 
 			System.out.println("salvo");
-		} catch (Exception e) {
+		} catch (Exception e)  { 
 			throw new RuntimeException("Erro ao adicionar fiel", e);
 		}
 	}
