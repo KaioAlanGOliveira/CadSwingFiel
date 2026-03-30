@@ -152,7 +152,7 @@ public class UiFielFrm {
 
 	private void novoRegistro() {
 		limparCampos();
-		idAtual = null; // <-- MUITO IMPORTANTE
+		idAtual = null; 
 		habilitarControles(true);
 		modoEdicao = true;
 		txtCpf.requestFocus();
@@ -309,6 +309,7 @@ public class UiFielFrm {
 		btnAlterar.setEnabled(!habilitar);
 		btnApagar.setEnabled(!habilitar);
 		btnNovo.setEnabled(!habilitar);
+		btnFechar.setEnabled(!habilitar);
 	}
 
 	public void mensagem(String msg, int tipo) {

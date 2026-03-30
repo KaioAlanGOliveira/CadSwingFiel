@@ -265,7 +265,9 @@ public class UiPagamentoFrm {
 		btnNovo.setEnabled(!habilitar);
 		btnFechar.setEnabled(!habilitar);
 
-		txtCodPg.setEnabled(true);
+		txtCodPg.setEnabled(false);
+		cbxFiel.setEnabled(habilitar);
+
 	}
 
 	public void mensagem(String msg, int tipo) {
@@ -304,45 +306,36 @@ public class UiPagamentoFrm {
 
 		if (modoEdicao) {
 
-			Pagamento pg;
+			 Pagamento pg;
 
-			if (modoEdicao) {
-				
-				pg = new Pagamento();
+			    if (modoEdicao) {
+			    	
+			        pg = new Pagamento();
+			        
+			        // Pegamos o Fiel selecionado
+			        Fiel fielSelecionado = (Fiel) cbxFiel.getSelectedItem();
+			        if (fielSelecionado == null) {
+			            throw new Exception("Selecione um Fiel primeiro!");
+			        }
 
-				PagamentoId id = new PagamentoId();
+			        PagamentoId novoId = new PagamentoId();
+			        novoId.setCpf(fielSelecionado.getCpf());
+			        
+			        pg.setId(novoId);
+			    } else {
+			        // Modo alteração: usa o ID que já existe
+			        PagamentoDao dao = new PagamentoDao();
+			        pg = dao.getPagamentoId(this.id);
+			    }
 
-				Fiel fielSelecionado = (Fiel) cbxFiel.getSelectedItem();
+			    try {
+			        pg.setValor(Double.parseDouble(txtValor.getText()));
+			    } catch (NumberFormatException e) {
+			        mensagem("Valor inválido!", JOptionPane.ERROR_MESSAGE);
+			        throw e;
+			    }
 
-				id.setCpf(fielSelecionado.getCpf());
-				id.setCodPagamento(Integer.parseInt(txtCodPg.getText()));
-
-				pg.setId(id);
-
-			} else {
-
-				PagamentoDao dao = new PagamentoDao();
-				pg = dao.getPagamentoId(this.id);
-			}
-
-			try {
-				pg.setValor(Double.parseDouble(txtValor.getText()));
-			} catch (NumberFormatException e) {
-				mensagem("Valor inválido!", JOptionPane.ERROR_MESSAGE);
-				return null;
-			}
-
-			try {
-
-				pg.setValor(Double.parseDouble(txtValor.getText()));
-			} catch (NumberFormatException e) {
-				mensagem("Valor inválido!", JOptionPane.ERROR_MESSAGE);
-			}
-
-			modoEdicao = true;
-			habilitarControles(false);
-
-			return pg;
+			    return pg;
 		} else {
 
 			PagamentoDao dao = new PagamentoDao();
