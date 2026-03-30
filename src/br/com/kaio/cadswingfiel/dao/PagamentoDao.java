@@ -3,6 +3,7 @@ package br.com.kaio.cadswingfiel.dao;
 import java.util.List;
 
 import br.com.kaio.cadswingfiel.domain.Pagamento;
+import br.com.kaio.cadswingfiel.domain.PagamentoId;
 import br.com.kaio.cadswingfiel.domain.PagamentoView;
 import br.com.kaio.cadswingfiel.persistence.EmFactory;
 //import br.com.kaio.cadswingfiel.domain.PagamentoView;
@@ -17,9 +18,9 @@ public class PagamentoDao {
 	private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("fielPersistenceUnit");
 	private static EntityManager em = emf.createEntityManager();
 
-//	public Pagamento getPagamento(PagamentoId id) throws Exception {
-//		return em.find(Pagamento.class, id);
-//	}
+	public Pagamento getPagamento(PagamentoId id) throws Exception {
+		return em.find(Pagamento.class, id);
+	}
 
 //	public List<Pagamento> getLista(String cpf) throws Exception {
 //
@@ -73,7 +74,7 @@ public class PagamentoDao {
 			em.merge(pg);
 			em.getTransaction().commit();
 		} catch (Exception e) {
-
+			e.printStackTrace();
 			throw new RuntimeException("erro ao atualizar fiel", e);
 		}
 

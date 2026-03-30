@@ -43,7 +43,10 @@ public class UiPagamentoFrm {
 	private JLabel lblNewLabel_2;
 	private JTextField txtNome;
 	private JTextField txtCodPg;
+	private PagamentoId id;
 
+	
+	
 	public UiPagamentoFrm() {
 
 		inicializarComponentes();
@@ -64,7 +67,15 @@ public class UiPagamentoFrm {
 
 		btnSalvar = new JButton("Salvar");
 		btnSalvar.setBounds(310, 116, 120, 28);
-		btnSalvar.addActionListener(e -> salvar());
+		btnSalvar.addActionListener(e -> {
+			try {
+
+				salvar();
+			} catch (Exception e2) {
+
+				e2.printStackTrace();
+			}
+		});
 		raiz.add(btnSalvar);
 
 		btnAlterar = new JButton("Alterar");
@@ -162,7 +173,7 @@ public class UiPagamentoFrm {
 		cbxFiel.requestFocus();
 	}
 
-	private void salvar() {
+	private void salvar() throws Exception {
 
 		if (!validarFrm()) {
 
@@ -289,10 +300,11 @@ public class UiPagamentoFrm {
 		JOptionPane.showMessageDialog(dialog, msg, titulo, tipo);
 	}
 
-	public void carregarDadosParaEdicao(int codPg, String cpf, String nome, Double valor) {
+	public void carregarDadosParaEdicao(int codPg, String cpf, String nome, Double valor, PagamentoId id) {
 
 		this.modoEdicao = false;
-
+		this.id = id;
+   
 		for (int i = 0; i < cbxFiel.getItemCount(); i++) {
 
 			Fiel f = cbxFiel.getItemAt(i);
@@ -310,16 +322,13 @@ public class UiPagamentoFrm {
 		habilitarControles(false);
 	}
 
-	private Pagamento getPagamento() {
+	private Pagamento getPagamento() throws Exception {
 
-		PagamentoId id = new PagamentoId();
-		Fiel selecionado = (Fiel) cbxFiel.getSelectedItem();
-		String cpf = selecionado.getCpf();
-//		String nome = selecionado.getNome();
-		id.setCpf(cpf);
+		PagamentoDao dao = new PagamentoDao();
 
-		Pagamento pg = new Pagamento();
-		pg.setId(id);
+		Pagamento pg = dao.getPagamento(id);
+
+
 		try {
 
 			pg.setValor(Long.parseLong(txtValor.getText()));

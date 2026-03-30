@@ -21,6 +21,7 @@ import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 
 import br.com.kaio.cadswingfiel.dao.PagamentoDao;
+import br.com.kaio.cadswingfiel.domain.PagamentoId;
 import br.com.kaio.cadswingfiel.domain.PagamentoView;
 
 public class UiPagamentoLst {
@@ -142,8 +143,10 @@ public class UiPagamentoLst {
 		String nome = (String) table.getValueAt(linha, 2);
 		double valor = Double.parseDouble(table.getValueAt(linha, 3).toString());
 
+		PagamentoId id = new PagamentoId(cpf, codPg);
+		
 		UiPagamentoFrm frm = new UiPagamentoFrm();
-		frm.carregarDadosParaEdicao(codPg, cpf, nome, valor);
+		frm.carregarDadosParaEdicao(codPg, cpf, nome, valor, id);
 		frm.show(null);
 	}
 
