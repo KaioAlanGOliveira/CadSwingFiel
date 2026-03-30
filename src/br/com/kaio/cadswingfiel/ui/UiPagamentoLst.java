@@ -147,7 +147,6 @@ public class UiPagamentoLst {
 
 		UiPagamentoFrm frm = new UiPagamentoFrm();
 		frm.carregarDadosParaEdicao(codPg, cpf, nome, valor);
-		frm.getPagamento(codPg, cpf, nome, valor);
 		frm.show(null);
 	}
 
