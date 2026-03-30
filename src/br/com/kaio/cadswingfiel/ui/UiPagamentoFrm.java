@@ -153,9 +153,9 @@ public class UiPagamentoFrm {
 	private void novoRegistro() {
 
 		limparCampos();
-//		idAtual = null; // <-- MUITO IMPORTANTE
-		habilitarControles(true);
+		this.id = null;
 		modoEdicao = true;
+		habilitarControles(true);
 		cbxFiel.requestFocus();
 	}
 
@@ -166,18 +166,17 @@ public class UiPagamentoFrm {
 			return;
 		}
 
-		Pagamento pgAtl = getPagamentoAtualizar();
-		Pagamento pgAdd = getPagamentoAdd();
+		Pagamento pg = getPagamento();
 		PagamentoDao dao = new PagamentoDao();
 
 		try {
 
 			if (modoEdicao) {
 
-				dao.adicionar(pgAdd);
+				dao.adicionar(pg);
 				mensagem("Fiel cadastrado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
 			} else {
-				dao.atualizar(pgAtl);
+				dao.atualizar(pg);
 				mensagem("Fiel atualizado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
 			}
 			habilitarControles(false);
@@ -189,7 +188,7 @@ public class UiPagamentoFrm {
 	private void alterar() {
 
 		this.modoEdicao = false;
-		cbxFiel.setEnabled(false);
+		cbxFiel.setEnabled(true);
 		habilitarControles(true);
 	}
 
@@ -205,7 +204,7 @@ public class UiPagamentoFrm {
 
 		try {
 
-			Pagamento pg = getPagamentoAtualizar();
+			Pagamento pg = getPagamento();
 			PagamentoDao dao = new PagamentoDao();
 			dao.apagar(pg);
 
@@ -266,7 +265,7 @@ public class UiPagamentoFrm {
 		btnNovo.setEnabled(!habilitar);
 		btnFechar.setEnabled(!habilitar);
 
-		txtCodPg.setEnabled(false);
+		txtCodPg.setEnabled(true);
 	}
 
 	public void mensagem(String msg, int tipo) {
@@ -301,40 +300,65 @@ public class UiPagamentoFrm {
 		habilitarControles(false);
 	}
 
-	private Pagamento getPagamentoAdd() throws Exception {
+	private Pagamento getPagamento() throws Exception {
 
-		Pagamento pg = new Pagamento();
-		
-		pg.setId(id);
+		if (modoEdicao) {
 
-		try {
+			Pagamento pg;
 
-			pg.setValor(Double.parseDouble(txtValor.getText()));
-		} catch (NumberFormatException e) {
-			mensagem("Valor inválido!", JOptionPane.ERROR_MESSAGE);
+			if (modoEdicao) {
+				
+				pg = new Pagamento();
+
+				PagamentoId id = new PagamentoId();
+
+				Fiel fielSelecionado = (Fiel) cbxFiel.getSelectedItem();
+
+				id.setCpf(fielSelecionado.getCpf());
+				id.setCodPagamento(Integer.parseInt(txtCodPg.getText()));
+
+				pg.setId(id);
+
+			} else {
+
+				PagamentoDao dao = new PagamentoDao();
+				pg = dao.getPagamentoId(this.id);
+			}
+
+			try {
+				pg.setValor(Double.parseDouble(txtValor.getText()));
+			} catch (NumberFormatException e) {
+				mensagem("Valor inválido!", JOptionPane.ERROR_MESSAGE);
+				return null;
+			}
+
+			try {
+
+				pg.setValor(Double.parseDouble(txtValor.getText()));
+			} catch (NumberFormatException e) {
+				mensagem("Valor inválido!", JOptionPane.ERROR_MESSAGE);
+			}
+
+			modoEdicao = true;
+			habilitarControles(false);
+
+			return pg;
+		} else {
+
+			PagamentoDao dao = new PagamentoDao();
+			Pagamento pg = dao.getPagamentoId(id);
+
+			try {
+
+				pg.setValor(Double.parseDouble(txtValor.getText()));
+			} catch (NumberFormatException e) {
+				mensagem("Valor inválido!", JOptionPane.ERROR_MESSAGE);
+			}
+
+			modoEdicao = false;
+			habilitarControles(false);
+
+			return pg;
 		}
-
-		modoEdicao = true;
-		habilitarControles(false);
-
-		return pg;
-	}
-
-	private Pagamento getPagamentoAtualizar() throws Exception {
-
-		PagamentoDao dao = new PagamentoDao();
-		Pagamento pg = dao.getPagamentoId(id);
-
-		try {
-
-			pg.setValor(Double.parseDouble(txtValor.getText()));
-		} catch (NumberFormatException e) {
-			mensagem("Valor inválido!", JOptionPane.ERROR_MESSAGE);
-		}
-
-		modoEdicao = false;
-		habilitarControles(false);
-
-		return pg;
 	}
 }
