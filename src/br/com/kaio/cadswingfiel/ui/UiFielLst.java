@@ -67,7 +67,7 @@ public class UiFielLst {
 		table = new JTable();
 		scrollPane.setViewportView(table);
 		table.setModel(
-				new DefaultTableModel(new Object[][] {}, new String[] { "Id", "CPF", "Nome", "Telefone", "Email" }));
+				new DefaultTableModel(new Object[][] {}, new String[] {"CPF", "Nome", "Telefone", "Email" }));
 		table.setDefaultEditor(Object.class, null);
 		table.addMouseListener(new MouseAdapter() {
 			@Override
@@ -124,7 +124,7 @@ public class UiFielLst {
 					modelo.setRowCount(0);
 
 					for (Fiel fe : lista) {
-						Object[] linha = { fe.getId(), fe.getCpf(), fe.getNome(), fe.getTelefone(), fe.getEmail() };
+						Object[] linha = {fe.getCpf(), fe.getNome(), fe.getTelefone(), fe.getEmail() };
 						modelo.addRow(linha);
 					}
 				} catch (Exception e1) {
@@ -139,14 +139,13 @@ public class UiFielLst {
 
 	public void carregarFielNoFormulario(int linha) {
 
-		Long id = (Long) table.getValueAt(linha, 0);
-		String cpf = (String) table.getValueAt(linha, 1);
-		String nome = (String) table.getValueAt(linha, 2);
-		String telefone = (String) table.getValueAt(linha, 3);
-		String email = (String) table.getValueAt(linha, 4);
+		String cpf = (String) table.getValueAt(linha, 0);
+		String nome = (String) table.getValueAt(linha, 1);
+		String telefone = (String) table.getValueAt(linha, 2);
+		String email = (String) table.getValueAt(linha, 3);
 
 		UiFielFrm frm = new UiFielFrm();
-		frm.carregarDadosParaEdicao(id, cpf, nome, telefone, email);
+		frm.carregarDadosParaEdicao(cpf, nome, telefone, email);
 		frm.show(null);
 	}
 

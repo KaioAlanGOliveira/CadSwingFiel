@@ -1,19 +1,29 @@
 package br.com.kaio.cadswingfiel.domain;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public class PagamentoId {
+public class PagamentoId implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Column(name = "cpf", length = 14)
 	private String cpf;
 
-//	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "cod_pagamento")
 	private Integer codPagamento;
+
+	public PagamentoId() {
+	}
+
+	public PagamentoId(String cpf, Integer codPagamento) {
+		this.cpf = cpf;
+		this.codPagamento = codPagamento;
+	}
 
 	public String getCpf() {
 		return cpf;
@@ -31,23 +41,11 @@ public class PagamentoId {
 		this.codPagamento = codPagamento;
 	}
 
-	public PagamentoId() {
-		super();
-	}
-	
-	
-
-	public PagamentoId(String cpf, Integer codPagamento) {
-		super();
-		this.cpf = cpf;
-		this.codPagamento = codPagamento;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
 			return true;
-		if (o == null || getClass() != o.getClass())
+		if (!(o instanceof PagamentoId))
 			return false;
 		PagamentoId that = (PagamentoId) o;
 		return Objects.equals(cpf, that.cpf) && Objects.equals(codPagamento, that.codPagamento);

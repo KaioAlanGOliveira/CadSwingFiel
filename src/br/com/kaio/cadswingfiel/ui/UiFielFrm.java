@@ -24,7 +24,6 @@ public class UiFielFrm {
 
 	private JTextField txtNome;
 	private JFormattedTextField txtCpf;
-	private Long idAtual;
 	private JFormattedTextField txtTelefone;
 	private JTextField txtEmail;
 
@@ -152,7 +151,6 @@ public class UiFielFrm {
 
 	private void novoRegistro() {
 		limparCampos();
-		idAtual = null; 
 		habilitarControles(true);
 		modoEdicao = true;
 		txtCpf.requestFocus();
@@ -281,7 +279,6 @@ public class UiFielFrm {
 				.replace(" ", "");
 
 		Fiel fiel = new Fiel();
-		fiel.setId(idAtual);
 		fiel.setCpf(cpfLimpo);
 		fiel.setNome(txtNome.getText().trim());
 		fiel.setTelefone(telefoneLimpo);
@@ -295,7 +292,6 @@ public class UiFielFrm {
 		txtNome.setText("");
 		txtTelefone.setText("");
 		txtEmail.setText("");
-		idAtual = null;
 	}
 
 	public void habilitarControles(boolean habilitar) {
@@ -323,8 +319,7 @@ public class UiFielFrm {
 	}
 
 //	, String telefone, String email
-	public void carregarDadosParaEdicao(Long id, String cpf, String nome, String telefone, String email) {
-		this.idAtual = id;
+	public void carregarDadosParaEdicao(String cpf, String nome, String telefone, String email) {
 		this.modoEdicao = false;
 
 		txtCpf.setText(cpf);

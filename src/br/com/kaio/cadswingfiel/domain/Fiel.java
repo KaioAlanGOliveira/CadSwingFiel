@@ -2,8 +2,6 @@ package br.com.kaio.cadswingfiel.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -12,44 +10,27 @@ import jakarta.persistence.Table;
 public class Fiel {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-
-	@Column(nullable = false, length = 150)
-	private String nome;
-
-	@Column(unique = true, nullable = false, precision = 100, scale = 0)
+	@Column(name = "cpf", length = 14)
 	private String cpf;
 
-	@Column(length = 15)
-	private String telefone;
+	@Column(name = "nome", nullable = false)
+	private String nome;
 
+	@Column(name = "email")
 	private String email;
 
-	public String getEmail() {
-		return email;
+	@Column(name = "idade")
+	private Integer idade;
+
+	@Column(name = "telefone")
+	private String telefone;
+
+	public String getCpf() {
+		return cpf;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public Fiel() {
-
-	}
-
-	public Fiel(String nome, String cpf, String telefone) {
-		this.nome = nome;
+	public void setCpf(String cpf) {
 		this.cpf = cpf;
-		this.telefone = telefone;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getNome() {
@@ -60,12 +41,20 @@ public class Fiel {
 		this.nome = nome;
 	}
 
-	public String getCpf() {
-		return cpf;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Integer getIdade() {
+		return idade;
+	}
+
+	public void setIdade(Integer idade) {
+		this.idade = idade;
 	}
 
 	public String getTelefone() {
@@ -76,9 +65,22 @@ public class Fiel {
 		this.telefone = telefone;
 	}
 
-	// Opcional: toString() para debug
+	public Fiel() {
+		super();
+	}
+
+	public Fiel(String cpf, String nome, String email, Integer idade, String telefone) {
+		super();
+		this.cpf = cpf;
+		this.nome = nome;
+		this.email = email;
+		this.idade = idade;
+		this.telefone = telefone;
+	}
+
 	@Override
 	public String toString() {
-		return cpf ;
+		return cpf;
 	}
+
 }
