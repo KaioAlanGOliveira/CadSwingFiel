@@ -112,9 +112,9 @@ public class UiPagamentoLst {
 					DefaultTableModel modelo = (DefaultTableModel) table.getModel();
 					modelo.setRowCount(0);
 
-					for (PagamentoView fe : lista) {
-						Object[] linha = { fe.getId().getCodPagamento(), fe.getId().getCpf(), fe.getNome(),
-								fe.getValor(), fe.getTipo() };
+					for (PagamentoView pgView : lista) {
+						Object[] linha = { pgView.getId().getCodPagamento(), pgView.getId().getCpf(), pgView.getNome(),
+								pgView.getValor(), pgView.getTipo()};
 						modelo.addRow(linha);
 					}
 				} catch (Exception e1) {
@@ -131,8 +131,8 @@ public class UiPagamentoLst {
 
 		int codPg = Integer.parseInt(table.getValueAt(linha, 0).toString());
 		String cpf = (String) table.getValueAt(linha, 1);
-		double valor = Double.parseDouble(table.getValueAt(linha, 2).toString());
-		Integer tipo = Integer.parseInt(table.getValueAt(linha, 3).toString());
+		double valor = Double.parseDouble(table.getValueAt(linha, 3).toString());
+		Integer tipo = Integer.parseInt(table.getValueAt(linha, 4).toString());
 
 		PagamentoId id = new PagamentoId(cpf, codPg);
 

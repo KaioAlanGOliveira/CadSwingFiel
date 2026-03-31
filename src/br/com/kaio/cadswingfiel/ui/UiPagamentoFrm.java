@@ -3,6 +3,7 @@ package br.com.kaio.cadswingfiel.ui;
 import java.awt.Dimension;
 import java.util.List;
 
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -11,6 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
@@ -26,8 +28,6 @@ public class UiPagamentoFrm {
 	private JDialog dialog;
 	private JPanel raiz;
 
-//	private JFormattedTextField txtCpf;
-
 	private JButton btnNovo;
 	private JButton btnSalvar;
 	private JButton btnAlterar;
@@ -37,11 +37,13 @@ public class UiPagamentoFrm {
 
 	private JTextField txtValor;
 	private JComboBox<Fiel> cbxFiel;
-	private JComboBox<Integer> cbxTipo;
 
 	private boolean modoEdicao = true;
 	private JTextField txtCodPg;
 	private PagamentoId cofPagamentoId;
+	private ButtonGroup grupo;
+	private JRadioButton rbOferta;
+	private JRadioButton rbDizimo;
 
 	public UiPagamentoFrm() {
 
@@ -74,6 +76,8 @@ public class UiPagamentoFrm {
 		});
 		raiz.add(btnSalvar);
 
+//		Buttons
+
 		btnAlterar = new JButton("Alterar");
 		btnAlterar.setBounds(310, 55, 120, 28);
 		btnAlterar.addActionListener(e -> alterar());
@@ -81,14 +85,7 @@ public class UiPagamentoFrm {
 
 		btnApagar = new JButton("Apagar");
 		btnApagar.setBounds(310, 217, 120, 28);
-		btnApagar.addActionListener(e -> {
-			try {
-
-				apagar();
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-		});
+		btnApagar.addActionListener(e -> apagar());
 		raiz.add(btnApagar);
 
 		btnCancelar = new JButton("Cancelar");
@@ -118,7 +115,7 @@ public class UiPagamentoFrm {
 		cbxFiel.setSelectedIndex(-1);
 		raiz.add(cbxFiel);
 
-//		Lbl
+//		Label
 		JLabel lblCpf = new JLabel("CPF do Fiel");
 		lblCpf.setBounds(29, 39, 86, 14);
 		raiz.add(lblCpf);
@@ -136,13 +133,23 @@ public class UiPagamentoFrm {
 		raiz.add(txtCodPg);
 		txtCodPg.setColumns(10);
 
-		cbxTipo = new JComboBox<Integer>();
-		cbxTipo.setBounds(29, 195, 93, 22);
-		raiz.add(cbxTipo);
-
 		JLabel lblTipo = new JLabel("Tipo");
 		lblTipo.setBounds(29, 176, 46, 14);
 		raiz.add(lblTipo);
+
+		rbOferta = new JRadioButton("Oferta");
+		rbOferta.setBounds(29, 197, 109, 23);
+		rbOferta.setActionCommand("0");
+		raiz.add(rbOferta);
+
+		rbDizimo = new JRadioButton("Dízimo");
+		rbDizimo.setBounds(153, 197, 109, 23);
+		rbDizimo.setActionCommand("1");
+		raiz.add(rbDizimo);
+
+		grupo = new ButtonGroup();
+		grupo.add(rbOferta);
+		grupo.add(rbDizimo);
 
 		habilitarControles(true);
 	}
@@ -181,7 +188,7 @@ public class UiPagamentoFrm {
 
 		try {
 
-			if (modoEdicao) {
+			if (pg != null) {
 
 				dao.adicionar(pg);
 				mensagem("Fiel cadastrado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
@@ -202,7 +209,7 @@ public class UiPagamentoFrm {
 		habilitarControles(true);
 	}
 
-	private void apagar() throws Exception {
+	private void apagar() {
 
 		int confirm = JOptionPane.showConfirmDialog(dialog, "Deseja realmente apagar este registro?", "Confirmação",
 				JOptionPane.YES_NO_OPTION);
@@ -262,6 +269,7 @@ public class UiPagamentoFrm {
 		cbxFiel.setSelectedIndex(-1);
 		txtValor.setText("");
 		txtCodPg.setText("");
+		grupo.clearSelection();
 	}
 
 	public void habilitarControles(boolean habilitar) {
@@ -304,11 +312,19 @@ public class UiPagamentoFrm {
 				cbxFiel.setSelectedItem(f);
 				break;
 			}
+
 		}
 
 		txtValor.setText(String.valueOf(valor));
 		txtCodPg.setText(String.valueOf(codPg));
-		cbxTipo.setSelectedItem(Integer.valueOf(tipo));
+
+		if (tipo != null) {
+			if (tipo == 0) {
+				rbOferta.setSelected(true);
+			} else if (tipo == 1) {
+				rbDizimo.setSelected(true);
+			}
+		}
 
 		habilitarControles(false);
 	}
@@ -317,29 +333,24 @@ public class UiPagamentoFrm {
 
 		if (modoEdicao) {
 
-			Pagamento pg;
+			PagamentoId novoId = new PagamentoId();
+			Pagamento pg = new Pagamento();
 
-			if (modoEdicao) {
-
-				pg = new Pagamento();
-
-				// Pegamos o Fiel selecionado
-				Fiel fielSelecionado = (Fiel) cbxFiel.getSelectedItem();
-				if (fielSelecionado == null) {
-					throw new Exception("Selecione um Fiel primeiro!");
-				}
-
-				PagamentoId novoId = new PagamentoId();
-				novoId.setCpf(fielSelecionado.getCpf());
-
-				pg.setId(novoId);
-			} else {
-
-				PagamentoDao dao = new PagamentoDao();
-				pg = dao.getPagamentoId(this.cofPagamentoId);
+			Fiel fielSelecionado = (Fiel) cbxFiel.getSelectedItem();
+			if (fielSelecionado == null) {
+				throw new Exception("Selecione um Fiel primeiro!");
 			}
 
+			if (grupo.getSelection() == null) {
+				throw new Exception("Selecione o tipo do pagamento!");
+			}
+
+			novoId.setCpf(fielSelecionado.getCpf());
+
 			try {
+
+				pg.setTipo(Integer.parseInt(grupo.getSelection().getActionCommand()));
+				pg.setId(novoId);
 				pg.setValor(Double.parseDouble(txtValor.getText()));
 			} catch (NumberFormatException e) {
 				mensagem("Valor inválido!", JOptionPane.ERROR_MESSAGE);
@@ -352,8 +363,13 @@ public class UiPagamentoFrm {
 			PagamentoDao dao = new PagamentoDao();
 			Pagamento pg = dao.getPagamentoId(cofPagamentoId);
 
+			if (grupo.getSelection() == null) {
+				
+				throw new Exception("Selecione o tipo do pagamento!");
+			}
 			try {
 
+				pg.setTipo(Integer.parseInt(grupo.getSelection().getActionCommand()));
 				pg.setValor(Double.parseDouble(txtValor.getText()));
 			} catch (NumberFormatException e) {
 				mensagem("Valor inválido!", JOptionPane.ERROR_MESSAGE);

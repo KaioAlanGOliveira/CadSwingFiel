@@ -18,6 +18,14 @@ public class PagamentoView {
 		super();
 	}
 
+	public Integer getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(Integer tipo) {
+		this.tipo = tipo;
+	}
+
 	public PagamentoId getId() {
 		return id;
 	}
@@ -28,14 +36,6 @@ public class PagamentoView {
 
 	public double getValor() {
 		return valor;
-	}
-
-	public Integer getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(Integer tipo) {
-		this.tipo = tipo;
 	}
 
 	public void setValor(double valor) {
