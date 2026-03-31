@@ -18,7 +18,7 @@ public class PagamentoDao {
 	private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("fielPersistenceUnit");
 	private static EntityManager em = emf.createEntityManager();
 
-	public Pagamento getPagamentoId(PagamentoId id) throws Exception {
+	public Pagamento getPagamentoById(PagamentoId id) throws Exception {
 		return em.find(Pagamento.class, id);
 	}
 
@@ -41,7 +41,7 @@ public class PagamentoDao {
 //		}
 //	}
 //
-	public void adicionar(Pagamento pg) throws Exception {
+	public Long adicionar(Pagamento pg) throws Exception {
 
 		EntityManager em = EmFactory.getEm();
 
@@ -59,12 +59,14 @@ public class PagamentoDao {
 			em.getTransaction().commit();
 
 			System.out.println("salvo");
+			
+			return max;
 		} catch (Exception e) {
 			throw new RuntimeException("Erro ao adicionar fiel", e);
 		}
 	}
 
-	public void atualizar(Pagamento pg) throws Exception {
+	public Pagamento atualizar(Pagamento pg) throws Exception {
 
 		EntityManager em = EmFactory.getEm();
 
@@ -73,6 +75,8 @@ public class PagamentoDao {
 			em.getTransaction().begin();
 			em.merge(pg);
 			em.getTransaction().commit();
+			
+			return pg;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException("erro ao atualizar fiel", e);

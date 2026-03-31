@@ -40,7 +40,7 @@ public class UiPagamentoFrm {
 
 	private boolean modoEdicao = true;
 	private JTextField txtCodPg;
-	private PagamentoId cofPagamentoId;
+	private PagamentoId codPagamentoId;
 	private ButtonGroup grupo;
 	private JRadioButton rbOferta;
 	private JRadioButton rbDizimo;
@@ -170,7 +170,7 @@ public class UiPagamentoFrm {
 	private void novoRegistro() {
 
 		limparCampos();
-		this.cofPagamentoId = null;
+		this.codPagamentoId = null;
 		modoEdicao = true;
 		habilitarControles(true);
 		cbxFiel.requestFocus();
@@ -187,15 +187,18 @@ public class UiPagamentoFrm {
 		PagamentoDao dao = new PagamentoDao();
 
 		try {
+			if (modoEdicao) {
 
-			if (pg != null) {
-
-				dao.adicionar(pg);
+				Integer codPagamento = dao.adicionar(pg).intValue();
+				pg.getId().setCodPagamento(codPagamento);
+				codPagamentoId = pg.getId(); 
 				mensagem("Fiel cadastrado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
 			} else {
-				dao.atualizar(pg);
+				pg = dao.atualizar(pg);
 				mensagem("Fiel atualizado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
 			}
+
+			carregarDadosParaEdicao(pg);
 			habilitarControles(false);
 		} catch (Exception ex) {
 			mensagem("Erro ao salvar: " + ex.getMessage(), JOptionPane.ERROR_MESSAGE);
@@ -240,6 +243,7 @@ public class UiPagamentoFrm {
 
 			limparCampos();
 			habilitarControles(false);
+			carregarDadosParaEdicao(codPagamentoId);
 		} else {
 			dialog.setVisible(false);
 		}
@@ -299,15 +303,14 @@ public class UiPagamentoFrm {
 		JOptionPane.showMessageDialog(dialog, msg, titulo, tipo);
 	}
 
-	public void carregarDadosParaEdicao(int codPg, String cpf, Double valor, PagamentoId id, Integer tipo) {
+	public void carregarDadosParaEdicao(Pagamento pagamento) {
 
 		this.modoEdicao = false;
-		this.cofPagamentoId = id;
 
 		for (int i = 0; i < cbxFiel.getItemCount(); i++) {
 
 			Fiel f = cbxFiel.getItemAt(i);
-			if (f.getCpf().equals(cpf)) {
+			if (f.getCpf().equals(pagamento.getId().getCpf())) {
 
 				cbxFiel.setSelectedItem(f);
 				break;
@@ -315,13 +318,13 @@ public class UiPagamentoFrm {
 
 		}
 
-		txtValor.setText(String.valueOf(valor));
-		txtCodPg.setText(String.valueOf(codPg));
+		txtValor.setText(String.valueOf(pagamento.getValor()));
+		txtCodPg.setText(String.valueOf(pagamento.getId().getCodPagamento()));
 
-		if (tipo != null) {
-			if (tipo == 0) {
+		if (pagamento.getTipo() != null) {
+			if (pagamento.getTipo() == 0) {
 				rbOferta.setSelected(true);
-			} else if (tipo == 1) {
+			} else if (pagamento.getTipo() == 1) {
 				rbDizimo.setSelected(true);
 			}
 		}
@@ -361,7 +364,7 @@ public class UiPagamentoFrm {
 		} else {
 
 			PagamentoDao dao = new PagamentoDao();
-			Pagamento pg = dao.getPagamentoId(cofPagamentoId);
+			Pagamento pg = dao.getPagamentoById(codPagamentoId);
 
 			if (grupo.getSelection() == null) {
 				
@@ -380,5 +383,22 @@ public class UiPagamentoFrm {
 
 			return pg;
 		}
+	}
+
+	public void carregarDadosParaEdicao(PagamentoId id) {
+		
+		PagamentoDao dao = new PagamentoDao();
+		Pagamento pagamento = null;
+		
+		codPagamentoId = id;
+		
+		try {
+			pagamento = dao.getPagamentoById(codPagamentoId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		carregarDadosParaEdicao(pagamento);
+		
 	}
 }

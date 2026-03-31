@@ -137,7 +137,7 @@ public class UiPagamentoLst {
 		PagamentoId id = new PagamentoId(cpf, codPg);
 
 		UiPagamentoFrm frm = new UiPagamentoFrm();
-		frm.carregarDadosParaEdicao(codPg, cpf, valor, id, tipo);
+		frm.carregarDadosParaEdicao(id);
 		frm.show(null);
 	}
 
