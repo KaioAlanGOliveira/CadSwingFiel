@@ -37,10 +37,11 @@ public class UiPagamentoFrm {
 
 	private JTextField txtValor;
 	private JComboBox<Fiel> cbxFiel;
+	private JComboBox<Integer> cbxTipo;
 
 	private boolean modoEdicao = true;
 	private JTextField txtCodPg;
-	private PagamentoId id;
+	private PagamentoId cofPagamentoId;
 
 	public UiPagamentoFrm() {
 
@@ -117,22 +118,31 @@ public class UiPagamentoFrm {
 		cbxFiel.setSelectedIndex(-1);
 		raiz.add(cbxFiel);
 
-		JLabel lblNewLabel = new JLabel("CPF do Fiel");
-		lblNewLabel.setBounds(29, 39, 86, 14);
-		raiz.add(lblNewLabel);
+//		Lbl
+		JLabel lblCpf = new JLabel("CPF do Fiel");
+		lblCpf.setBounds(29, 39, 86, 14);
+		raiz.add(lblCpf);
 
-		JLabel lblNewLabel_1 = new JLabel("Valor");
-		lblNewLabel_1.setBounds(29, 101, 46, 14);
-		raiz.add(lblNewLabel_1);
+		JLabel lblValor = new JLabel("Valor");
+		lblValor.setBounds(29, 101, 46, 14);
+		raiz.add(lblValor);
 
-		JLabel lblNewLabel_3 = new JLabel("CodPG");
-		lblNewLabel_3.setBounds(181, 39, 46, 14);
-		raiz.add(lblNewLabel_3);
+		JLabel lblCodPg = new JLabel("CodPG");
+		lblCodPg.setBounds(181, 39, 46, 14);
+		raiz.add(lblCodPg);
 
 		txtCodPg = new JTextField();
 		txtCodPg.setBounds(181, 64, 93, 28);
 		raiz.add(txtCodPg);
 		txtCodPg.setColumns(10);
+
+		cbxTipo = new JComboBox<Integer>();
+		cbxTipo.setBounds(29, 195, 93, 22);
+		raiz.add(cbxTipo);
+
+		JLabel lblTipo = new JLabel("Tipo");
+		lblTipo.setBounds(29, 176, 46, 14);
+		raiz.add(lblTipo);
 
 		habilitarControles(true);
 	}
@@ -153,7 +163,7 @@ public class UiPagamentoFrm {
 	private void novoRegistro() {
 
 		limparCampos();
-		this.id = null;
+		this.cofPagamentoId = null;
 		modoEdicao = true;
 		habilitarControles(true);
 		cbxFiel.requestFocus();
@@ -281,10 +291,10 @@ public class UiPagamentoFrm {
 		JOptionPane.showMessageDialog(dialog, msg, titulo, tipo);
 	}
 
-	public void carregarDadosParaEdicao(int codPg, String cpf, Double valor, PagamentoId id) {
+	public void carregarDadosParaEdicao(int codPg, String cpf, Double valor, PagamentoId id, Integer tipo) {
 
 		this.modoEdicao = false;
-		this.id = id;
+		this.cofPagamentoId = id;
 
 		for (int i = 0; i < cbxFiel.getItemCount(); i++) {
 
@@ -298,6 +308,7 @@ public class UiPagamentoFrm {
 
 		txtValor.setText(String.valueOf(valor));
 		txtCodPg.setText(String.valueOf(codPg));
+		cbxTipo.setSelectedItem(Integer.valueOf(tipo));
 
 		habilitarControles(false);
 	}
@@ -306,40 +317,40 @@ public class UiPagamentoFrm {
 
 		if (modoEdicao) {
 
-			 Pagamento pg;
+			Pagamento pg;
 
-			    if (modoEdicao) {
-			    	
-			        pg = new Pagamento();
-			        
-			        // Pegamos o Fiel selecionado
-			        Fiel fielSelecionado = (Fiel) cbxFiel.getSelectedItem();
-			        if (fielSelecionado == null) {
-			            throw new Exception("Selecione um Fiel primeiro!");
-			        }
+			if (modoEdicao) {
 
-			        PagamentoId novoId = new PagamentoId();
-			        novoId.setCpf(fielSelecionado.getCpf());
-			        
-			        pg.setId(novoId);
-			    } else {
-			        // Modo alteração: usa o ID que já existe
-			        PagamentoDao dao = new PagamentoDao();
-			        pg = dao.getPagamentoId(this.id);
-			    }
+				pg = new Pagamento();
 
-			    try {
-			        pg.setValor(Double.parseDouble(txtValor.getText()));
-			    } catch (NumberFormatException e) {
-			        mensagem("Valor inválido!", JOptionPane.ERROR_MESSAGE);
-			        throw e;
-			    }
+				// Pegamos o Fiel selecionado
+				Fiel fielSelecionado = (Fiel) cbxFiel.getSelectedItem();
+				if (fielSelecionado == null) {
+					throw new Exception("Selecione um Fiel primeiro!");
+				}
 
-			    return pg;
+				PagamentoId novoId = new PagamentoId();
+				novoId.setCpf(fielSelecionado.getCpf());
+
+				pg.setId(novoId);
+			} else {
+
+				PagamentoDao dao = new PagamentoDao();
+				pg = dao.getPagamentoId(this.cofPagamentoId);
+			}
+
+			try {
+				pg.setValor(Double.parseDouble(txtValor.getText()));
+			} catch (NumberFormatException e) {
+				mensagem("Valor inválido!", JOptionPane.ERROR_MESSAGE);
+				throw e;
+			}
+
+			return pg;
 		} else {
 
 			PagamentoDao dao = new PagamentoDao();
-			Pagamento pg = dao.getPagamentoId(id);
+			Pagamento pg = dao.getPagamentoId(cofPagamentoId);
 
 			try {
 

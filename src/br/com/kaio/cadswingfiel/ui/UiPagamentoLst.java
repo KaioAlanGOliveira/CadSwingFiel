@@ -1,7 +1,6 @@
 package br.com.kaio.cadswingfiel.ui;
 
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
@@ -45,16 +44,8 @@ public class UiPagamentoLst {
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				EventQueue.invokeLater(new Runnable() {
-					public void run() {
-						try {
-							UiPagamentoFrm window = new UiPagamentoFrm();
-							window.show(null);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				});
+				UiPagamentoFrm window = new UiPagamentoFrm();
+				window.show(null);
 			}
 		});
 		btnAdd.setBounds(831, 122, 41, 23);
@@ -66,8 +57,8 @@ public class UiPagamentoLst {
 
 		table = new JTable();
 		scrollPane.setViewportView(table);
-		table.setModel(
-				new DefaultTableModel(new Object[][] {}, new String[] {"CodPagamento", "CPF", "Nome", "Valor"}));
+		table.setModel(new DefaultTableModel(new Object[][] {},
+				new String[] { "CodPagamento", "CPF", "Nome", "Valor", "Tipo" }));
 		table.setDefaultEditor(Object.class, null);
 		table.addMouseListener(new MouseAdapter() {
 			@Override
@@ -123,7 +114,7 @@ public class UiPagamentoLst {
 
 					for (PagamentoView fe : lista) {
 						Object[] linha = { fe.getId().getCodPagamento(), fe.getId().getCpf(), fe.getNome(),
-								fe.getValor()};
+								fe.getValor(), fe.getTipo() };
 						modelo.addRow(linha);
 					}
 				} catch (Exception e1) {
@@ -140,12 +131,13 @@ public class UiPagamentoLst {
 
 		int codPg = Integer.parseInt(table.getValueAt(linha, 0).toString());
 		String cpf = (String) table.getValueAt(linha, 1);
-		double valor = Double.parseDouble(table.getValueAt(linha, 3).toString());
+		double valor = Double.parseDouble(table.getValueAt(linha, 2).toString());
+		Integer tipo = Integer.parseInt(table.getValueAt(linha, 3).toString());
 
 		PagamentoId id = new PagamentoId(cpf, codPg);
-		
+
 		UiPagamentoFrm frm = new UiPagamentoFrm();
-		frm.carregarDadosParaEdicao(codPg, cpf, valor, id);
+		frm.carregarDadosParaEdicao(codPg, cpf, valor, id, tipo);
 		frm.show(null);
 	}
 

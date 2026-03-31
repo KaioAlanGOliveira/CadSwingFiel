@@ -10,6 +10,13 @@ public class PagamentoView {
 
 	@EmbeddedId
 	private PagamentoId id;
+	private double valor;
+	private String nome;
+	private Integer tipo;
+
+	public PagamentoView() {
+		super();
+	}
 
 	public PagamentoId getId() {
 		return id;
@@ -19,11 +26,16 @@ public class PagamentoView {
 		this.id = id;
 	}
 
-	private double valor;
-	private String nome;
-
 	public double getValor() {
 		return valor;
+	}
+
+	public Integer getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(Integer tipo) {
+		this.tipo = tipo;
 	}
 
 	public void setValor(double valor) {
@@ -36,9 +48,5 @@ public class PagamentoView {
 
 	public void setNome(String nome) {
 		this.nome = nome;
-	}
-
-	public PagamentoView() {
-		super();
 	}
 }
