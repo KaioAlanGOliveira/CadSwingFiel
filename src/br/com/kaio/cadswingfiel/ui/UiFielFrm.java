@@ -37,10 +37,12 @@ public class UiFielFrm {
 	private boolean modoEdicao = true;
 
 	public UiFielFrm() {
+		
 		inicializarComponentes();
 	}
 
 	private void inicializarComponentes() {
+		
 		raiz = new JPanel();
 		raiz.setLayout(null);
 		raiz.setPreferredSize(new Dimension(740, 320));
@@ -62,10 +64,12 @@ public class UiFielFrm {
 		raiz.add(lblCpf);
 
 		try {
+			
 			MaskFormatter maskCpf = new MaskFormatter("###.###.###-##");
-			maskCpf.setPlaceholderCharacter('_');
+//			maskCpf.setPlaceholderCharacter('_');
 			txtCpf = new JFormattedTextField(maskCpf);
 		} catch (ParseException e) {
+			
 			txtCpf = new JFormattedTextField();
 		}
 		txtCpf.setBounds(28, 82, 112, 28);
@@ -77,10 +81,12 @@ public class UiFielFrm {
 		raiz.add(lblTelefone);
 
 		try {
+			
 			MaskFormatter maskTel = new MaskFormatter("(##) #####-####");
 			maskTel.setPlaceholderCharacter('_');
 			txtTelefone = new JFormattedTextField(maskTel);
 		} catch (ParseException e) {
+			
 			txtTelefone = new JFormattedTextField();
 		}
 		txtTelefone.setBounds(28, 172, 112, 28);
@@ -114,13 +120,7 @@ public class UiFielFrm {
 
 		btnApagar = new JButton("Apagar");
 		btnApagar.setBounds(590, 221, 120, 28);
-		btnApagar.addActionListener(e -> {
-			try {
-				apagar();
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-		});
+		btnApagar.addActionListener(e -> apagar());
 		raiz.add(btnApagar);
 
 		btnCancelar = new JButton("Cancelar");
@@ -134,12 +134,12 @@ public class UiFielFrm {
 		raiz.add(btnFechar);
 
 		habilitarControles(true);
-
 	}
 
 	// ====================== MÉTODOS ======================
 
 	public void show(JFrame framePai) {
+		
 		dialog = new JDialog(framePai, "Cadastro de Fiel", true);
 		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		dialog.setContentPane(raiz);
@@ -150,21 +150,26 @@ public class UiFielFrm {
 	}
 
 	private void novoRegistro() {
+		
 		limparCampos();
 		habilitarControles(true);
 		modoEdicao = true;
 		txtCpf.requestFocus();
+		txtCpf.setEditable(true);
 	}
 
 	private void salvar() {
-		if (!validarFrm()) {
-			return;
-		}
-
+		
 		Fiel fiel = getFiel();
 		FielDao dao = new FielDao();
 
+		if (!validarFrm()) {
+			
+			return;
+		}
+
 		try {
+			
 			if (modoEdicao) {
 
 				dao.adicionarFiel(fiel);
@@ -177,6 +182,7 @@ public class UiFielFrm {
 			}
 			habilitarControles(false);
 		} catch (Exception ex) {
+			
 			mensagem("Erro ao salvar: " + ex.getMessage(), JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -188,11 +194,12 @@ public class UiFielFrm {
 		habilitarControles(true);
 	}
 
-	private void apagar() throws Exception {
+	private void apagar() {
 
 		String cpfLimpo = txtCpf.getText().trim().replace(".", "").replace("-", "").replace("/", "");
 
 		if (cpfLimpo.isEmpty() || cpfLimpo.length() != 11) {
+			
 			mensagem("Informe um CPF válido para apagar!", JOptionPane.WARNING_MESSAGE);
 			txtCpf.requestFocus();
 			return;
@@ -202,10 +209,12 @@ public class UiFielFrm {
 				JOptionPane.YES_NO_OPTION);
 
 		if (confirm != JOptionPane.YES_OPTION) {
+			
 			return;
 		}
 
 		try {
+			
 			FielDao dao = new FielDao();
 			dao.removerFiel(cpfLimpo);
 
@@ -213,72 +222,80 @@ public class UiFielFrm {
 
 			limparCampos();
 			habilitarControles(false);
-
 		} catch (Exception e) {
+			
 			mensagem("Erro ao apagar: " + e.getMessage(), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
 	private void cancelar() {
+		
 		if (!modoEdicao) {
+			
 			limparCampos();
 			habilitarControles(false);
 		} else {
+			
 			dialog.setVisible(false);
 		}
 	}
 
 	public boolean validarFrm() {
+		
 		String cpfLimpo = txtCpf.getText().trim().replace(".", "").replace("-", "").replace("/", "");
-
 		String telefoneLimpo = txtTelefone.getText().trim().replace("(", "").replace(")", "").replace("-", "")
 				.replace(" ", "");
 
 		if (!cpfLimpo.matches("\\d{11}")) {
+			
 			mensagem("CPF inválido!", JOptionPane.WARNING_MESSAGE);
 			return false;
 		}
 
 		if (cpfLimpo.isEmpty()) {
+			
 			mensagem("O campo CPF é obrigatório!", JOptionPane.WARNING_MESSAGE);
 			txtCpf.requestFocus();
 			return false;
 		}
 		if (cpfLimpo.length() != 11) {
+			
 			mensagem("CPF deve conter 11 dígitos!", JOptionPane.WARNING_MESSAGE);
 			txtCpf.requestFocus();
 			return false;
 		}
 
 		if (txtNome.getText().trim().isEmpty()) {
+			
 			mensagem("O campo Nome é obrigatório!", JOptionPane.WARNING_MESSAGE);
 			txtNome.requestFocus();
 			return false;
 		}
 
 		if (telefoneLimpo.isEmpty()) {
+			
 			mensagem("O campo Telefone é obrigatório!", JOptionPane.WARNING_MESSAGE);
 			txtTelefone.requestFocus();
 			return false;
 		}
 
 		if (txtEmail.getText().trim().isEmpty()) {
+			
 			mensagem("O campo E-mail é obrigatório!", JOptionPane.WARNING_MESSAGE);
 			txtEmail.requestFocus();
 			return false;
 		}
-
 		return true;
 	}
 
 	public Fiel getFiel() {
 
-		String cpfLimpo = txtCpf.getText().trim().replace(".", "").replace("-", "").replace("/", "");
+		Fiel fiel = new Fiel();
 
+		String cpfLimpo = txtCpf.getText().trim().replace(".", "").replace("-", "").replace("/", "");
 		String telefoneLimpo = txtTelefone.getText().trim().replace("(", "").replace(")", "").replace("-", "")
 				.replace(" ", "");
 
-		Fiel fiel = new Fiel();
 		fiel.setCpf(cpfLimpo);
 		fiel.setNome(txtNome.getText().trim());
 		fiel.setTelefone(telefoneLimpo);
@@ -288,6 +305,7 @@ public class UiFielFrm {
 	}
 
 	private void limparCampos() {
+		
 		txtCpf.setText("");
 		txtNome.setText("");
 		txtTelefone.setText("");
@@ -295,11 +313,12 @@ public class UiFielFrm {
 	}
 
 	public void habilitarControles(boolean habilitar) {
+		
 		txtCpf.setEditable(habilitar);
 		txtNome.setEditable(habilitar);
 		txtTelefone.setEditable(habilitar);
 		txtEmail.setEditable(habilitar);
-
+		
 		btnSalvar.setEnabled(habilitar);
 		btnCancelar.setEnabled(habilitar);
 		btnAlterar.setEnabled(!habilitar);
@@ -309,17 +328,19 @@ public class UiFielFrm {
 	}
 
 	public void mensagem(String msg, int tipo) {
+		
 		String titulo = switch (tipo) {
 		case JOptionPane.ERROR_MESSAGE -> "Erro";
 		case JOptionPane.WARNING_MESSAGE -> "Atenção";
 		case JOptionPane.INFORMATION_MESSAGE -> "Sucesso";
 		default -> "Mensagem";
 		};
+		
 		JOptionPane.showMessageDialog(dialog, msg, titulo, tipo);
 	}
 
-//	, String telefone, String email
 	public void carregarDadosParaEdicao(String cpf, String nome, String telefone, String email) {
+		
 		this.modoEdicao = false;
 
 		txtCpf.setText(cpf);
@@ -328,6 +349,6 @@ public class UiFielFrm {
 		txtEmail.setText(email);
 
 		habilitarControles(false);
-		btnSalvar.setText("Atualizar"); // muda o texto do botão
+//		btnSalvar.setText("Atualizar"); 
 	}
 }

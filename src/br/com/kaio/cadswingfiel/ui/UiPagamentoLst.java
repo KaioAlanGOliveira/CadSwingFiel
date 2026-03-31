@@ -41,12 +41,10 @@ public class UiPagamentoLst {
 		raiz.setPreferredSize(new Dimension(891, 479));
 
 		JButton btnAdd = new JButton("+");
-		btnAdd.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		btnAdd.addActionListener(e -> {
 
-				UiPagamentoFrm window = new UiPagamentoFrm();
-				window.show(null);
-			}
+			UiPagamentoFrm window = new UiPagamentoFrm();
+			window.show(null);
 		});
 		btnAdd.setBounds(831, 122, 41, 23);
 		raiz.add(btnAdd);
@@ -61,12 +59,15 @@ public class UiPagamentoLst {
 				new String[] { "CodPagamento", "CPF", "Nome", "Valor", "Tipo" }));
 		table.setDefaultEditor(Object.class, null);
 		table.addMouseListener(new MouseAdapter() {
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
 
 				if (e.getClickCount() == 2) {
+
 					int linha = table.getSelectedRow();
 					if (linha != -1) {
+
 						carregarFielNoFormulario(linha);
 					}
 				}
@@ -99,12 +100,12 @@ public class UiPagamentoLst {
 
 		JButton btnPesq = new JButton("Pesquisar");
 		btnPesq.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent e) {
+				PagamentoDao dao = new PagamentoDao();
 
 				String nome = txtNome.getText();
 				String cpf = txtCpf.getText();
-
-				PagamentoDao dao = new PagamentoDao();
 
 				try {
 
@@ -113,14 +114,15 @@ public class UiPagamentoLst {
 					modelo.setRowCount(0);
 
 					for (PagamentoView pgView : lista) {
+
 						Object[] linha = { pgView.getId().getCodPagamento(), pgView.getId().getCpf(), pgView.getNome(),
-								pgView.getValor(), pgView.getTipo()};
+								pgView.getValor(), pgView.getTipo() };
 						modelo.addRow(linha);
 					}
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
+				} catch (Exception err) {
 
+					err.printStackTrace();
+				}
 			}
 		});
 		btnPesq.setBounds(784, 84, 90, 28);
@@ -131,8 +133,6 @@ public class UiPagamentoLst {
 
 		int codPg = Integer.parseInt(table.getValueAt(linha, 0).toString());
 		String cpf = (String) table.getValueAt(linha, 1);
-		double valor = Double.parseDouble(table.getValueAt(linha, 3).toString());
-		Integer tipo = Integer.parseInt(table.getValueAt(linha, 4).toString());
 
 		PagamentoId id = new PagamentoId(cpf, codPg);
 
@@ -155,7 +155,6 @@ public class UiPagamentoLst {
 		dialog.pack();
 		dialog.setLocationRelativeTo(framePai);
 		dialog.setResizable(false);
-
 		dialog.setVisible(true);
 	}
 }

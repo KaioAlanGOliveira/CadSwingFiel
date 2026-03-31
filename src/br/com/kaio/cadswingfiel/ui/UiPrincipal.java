@@ -33,14 +33,19 @@ public class UiPrincipal {
 	private final Color BORDER_COLOR = new Color(222, 226, 230);
 
 	public UiPrincipal() {
+		
 		setNimbusLookAndFeel();
 		initialize();
 	}
 
 	private void setNimbusLookAndFeel() {
+		
 		try {
+			
 			for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+				
 				if ("Nimbus".equals(info.getName())) {
+					
 					UIManager.setLookAndFeel(info.getClassName());
 					break;
 				}
@@ -52,11 +57,13 @@ public class UiPrincipal {
 			UIManager.put("text", TEXT_COLOR);
 			UIManager.put("MenuBar.background", Color.WHITE);
 		} catch (Exception e) {
+			
 			e.printStackTrace();
 		}
 	}
 
 	private void initialize() {
+		
 		frame = new JFrame("Sistema de Gestão - Fiel");
 		frame.setSize(1100, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -78,7 +85,7 @@ public class UiPrincipal {
 		mnCadastros.addSeparator();
 
 		JMenuItem menuPagamento = new JMenuItem("Pagamentos");
-		menuPagamento.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK));
+		menuPagamento.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
 		menuPagamento.addActionListener(e -> new UiPagamentoLst().show(frame));
 		mnCadastros.add(menuPagamento);
 
@@ -122,7 +129,7 @@ public class UiPrincipal {
 		panelCentral.add(card);
 		frame.getContentPane().add(panelCentral, BorderLayout.CENTER);
 
-		JLabel lblStatus = new JLabel("  Pronto para uso | Versão 1.0.0");
+		JLabel lblStatus = new JLabel("  Pronto para uso | Versão 3.0.0");
 		lblStatus.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 		lblStatus.setForeground(SECONDARY_TEXT);
 		lblStatus.setPreferredSize(new Dimension(frame.getWidth(), 30));
@@ -131,6 +138,7 @@ public class UiPrincipal {
 	}
 
 	public void setVisible(boolean b) {
+		
 		frame.setVisible(b);
 	}
 }

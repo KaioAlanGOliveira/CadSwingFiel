@@ -1,7 +1,6 @@
 package br.com.kaio.cadswingfiel.ui;
 
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
@@ -32,33 +31,11 @@ public class UiFielLst {
 	private JTextField txtNome;
 	private JTextField txtCpf;
 
-	/**
-	 * Create the frame.
-	 */
 	public UiFielLst() {
 
 		raiz = new JPanel();
 		raiz.setLayout(null);
 		raiz.setPreferredSize(new Dimension(891, 479));
-
-		JButton btnAdd = new JButton("+");
-		btnAdd.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				EventQueue.invokeLater(new Runnable() {
-					public void run() {
-						try {
-							UiFielFrm window = new UiFielFrm();
-							window.show(null);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				});
-			}
-		});
-		btnAdd.setBounds(831, 122, 41, 23);
-		raiz.add(btnAdd);
 
 		scrollPane = new JScrollPane();
 		scrollPane.setBounds(23, 149, 851, 309);
@@ -66,22 +43,8 @@ public class UiFielLst {
 
 		table = new JTable();
 		scrollPane.setViewportView(table);
-		table.setModel(
-				new DefaultTableModel(new Object[][] {}, new String[] {"CPF", "Nome", "Telefone", "Email" }));
+		table.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "CPF", "Nome", "Telefone", "Email" }));
 		table.setDefaultEditor(Object.class, null);
-		table.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-
-				if (e.getClickCount() == 2) {
-					int linha = table.getSelectedRow();
-					if (linha != -1) {
-						carregarFielNoFormulario(linha);
-					}
-				}
-
-			}
-		});
 
 		Label label = new Label("Lista");
 		label.setFont(new Font("Dialog", Font.ITALIC, 12));
@@ -108,8 +71,38 @@ public class UiFielLst {
 		LblCpf.setBounds(28, 28, 62, 22);
 		raiz.add(LblCpf);
 
+		JButton btnAdd = new JButton("+");
+		btnAdd.addActionListener(e -> {
+
+			UiFielFrm window = new UiFielFrm();
+			window.show(null);
+		});
+		btnAdd.setBounds(831, 122, 41, 23);
+		raiz.add(btnAdd);
+
+//		----------------Métodos-------------------
+
+//		duplo click
+		table.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+				if (e.getClickCount() == 2) {
+
+					int linha = table.getSelectedRow();
+					if (linha != -1) {
+
+						carregarFielNoFormulario(linha);
+					}
+				}
+			}
+		});
+
+//		Pesquisar
 		JButton btnPesq = new JButton("Pesquisar");
 		btnPesq.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent e) {
 
 				String nome = txtNome.getText();
@@ -124,10 +117,12 @@ public class UiFielLst {
 					modelo.setRowCount(0);
 
 					for (Fiel fe : lista) {
-						Object[] linha = {fe.getCpf(), fe.getNome(), fe.getTelefone(), fe.getEmail() };
+
+						Object[] linha = { fe.getCpf(), fe.getNome(), fe.getTelefone(), fe.getEmail() };
 						modelo.addRow(linha);
 					}
 				} catch (Exception e1) {
+
 					e1.printStackTrace();
 				}
 
@@ -137,6 +132,7 @@ public class UiFielLst {
 		raiz.add(btnPesq);
 	}
 
+//	Enviar dados para o frm
 	public void carregarFielNoFormulario(int linha) {
 
 		String cpf = (String) table.getValueAt(linha, 0);
@@ -149,6 +145,7 @@ public class UiFielLst {
 		frm.show(null);
 	}
 
+//	Mostrar frm
 	public void showFrm() {
 
 		UiFielFrm window = new UiFielFrm();
