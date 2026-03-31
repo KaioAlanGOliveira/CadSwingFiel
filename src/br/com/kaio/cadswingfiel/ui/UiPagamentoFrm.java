@@ -259,9 +259,17 @@ public class UiPagamentoFrm {
 
 		if (txtValor.getText().trim().isEmpty()) {
 
-			mensagem("O campo Nome é obrigatório!", JOptionPane.WARNING_MESSAGE);
+			mensagem("O campo Valor é obrigatório!", JOptionPane.WARNING_MESSAGE);
 			txtValor.requestFocus();
 			return false;
+		}
+		
+		if (!txtValor.getText().matches("\\d+")) {
+			
+		    JOptionPane.showMessageDialog(null, "Digite apenas números!");
+		    txtValor.setText(""); 
+		    txtValor.requestFocus();
+		    return false; 
 		}
 		return true;
 	}
