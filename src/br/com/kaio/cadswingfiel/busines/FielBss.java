@@ -1,4 +1,4 @@
-package br.com.kaio.cadswingfiel.bss;
+package br.com.kaio.cadswingfiel.busines;
 
 import java.util.List;
 

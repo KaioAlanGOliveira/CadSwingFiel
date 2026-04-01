@@ -22,6 +22,7 @@ import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import java.awt.event.ActionListener;
 
 public class UiPrincipal {
 
@@ -88,9 +89,11 @@ public class UiPrincipal {
 		menuPagamento.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
 		menuPagamento.addActionListener(e -> new UiPagamentoLst().show(frame));
 		mnCadastros.add(menuPagamento);
-
+		
 		JMenu mnAjuda = new JMenu("Ajuda");
-		mnAjuda.add(new JMenuItem("Sobre o Sistema"));
+		JMenuItem menuItem = new JMenuItem("Sobre o Sistema");
+		menuItem.addActionListener(e -> new UiAjuda().show(frame));
+		mnAjuda.add(menuItem);
 
 		menuBar.add(mnCadastros);
 		menuBar.add(mnAjuda);
@@ -137,8 +140,8 @@ public class UiPrincipal {
 		frame.getContentPane().add(lblStatus, BorderLayout.SOUTH);
 	}
 
-	public void setVisible(boolean b) {
+	public void setVisible(boolean visible) {
 		
-		frame.setVisible(b);
+		frame.setVisible(visible);
 	}
 }
