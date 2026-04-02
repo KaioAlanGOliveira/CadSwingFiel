@@ -22,7 +22,6 @@ import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import java.awt.event.ActionListener;
 
 public class UiPrincipal {
 
@@ -34,19 +33,19 @@ public class UiPrincipal {
 	private final Color BORDER_COLOR = new Color(222, 226, 230);
 
 	public UiPrincipal() {
-		
+
 		setNimbusLookAndFeel();
 		initialize();
 	}
 
 	private void setNimbusLookAndFeel() {
-		
+
 		try {
-			
+
 			for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-				
+
 				if ("Nimbus".equals(info.getName())) {
-					
+
 					UIManager.setLookAndFeel(info.getClassName());
 					break;
 				}
@@ -58,13 +57,13 @@ public class UiPrincipal {
 			UIManager.put("text", TEXT_COLOR);
 			UIManager.put("MenuBar.background", Color.WHITE);
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
 		}
 	}
 
 	private void initialize() {
-		
+
 		frame = new JFrame("Sistema de Gestão - Fiel");
 		frame.setSize(1100, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -89,7 +88,7 @@ public class UiPrincipal {
 		menuPagamento.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
 		menuPagamento.addActionListener(e -> new UiPagamentoLst().show(frame));
 		mnCadastros.add(menuPagamento);
-		
+
 		JMenu mnAjuda = new JMenu("Ajuda");
 		JMenuItem menuItem = new JMenuItem("Sobre o Sistema");
 		menuItem.addActionListener(e -> new UiAjuda().show(frame));
@@ -141,7 +140,7 @@ public class UiPrincipal {
 	}
 
 	public void setVisible(boolean visible) {
-		
+
 		frame.setVisible(visible);
 	}
 }

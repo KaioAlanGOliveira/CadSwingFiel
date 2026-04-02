@@ -24,7 +24,7 @@ public class FielBusines {
 		List<Fiel> existente = dao.buscarPorFiltro(fiel.getCpf(), "");
 		if (!existente.isEmpty()) {
 
-			dao.atualizarFiel(fiel);
+			throw new Exception("já a um fiel cadastrado nesse cpf!!.");
 		} else {
 
 			dao.adicionarFiel(fiel);

@@ -1,46 +1,51 @@
 package br.com.kaio.cadswingfiel.busines;
 
-import java.util.List;
-
-import br.com.kaio.cadswingfiel.dao.FielDao;
 import br.com.kaio.cadswingfiel.dao.PagamentoDao;
-import br.com.kaio.cadswingfiel.domain.Fiel;
 import br.com.kaio.cadswingfiel.domain.Pagamento;
-import jakarta.transaction.Transactional.TxType;
 
 public class PagamentoBusines {
 
-	private final PagamentoDao dao = new PagamentoDao();
+	PagamentoDao pgDao = new PagamentoDao();
 
-	public void salvarPagamento(Pagamento pg) throws Exception {
+	public Integer salvar(Pagamento pg) {
 
-		if (pg.getId().getCpf() == " ") {
+		try {
 
-			throw new Exception("O nome deve ter pelo menos 3 caracteres.");
+			Integer codPagamento = pgDao.adicionar(pg).intValue();
+
+			return codPagamento;
+		} catch (Exception e) {
+
+			e.printStackTrace();
 		}
+		return null;
 
-		if () {
-
-			throw new Exception("CPF inválido!");
-		}
-
-		List<Fiel> existente = dao.buscarPorFiltro(fiel.getCpf(), "");
-		if (!existente.isEmpty()) {
-
-			dao.atualizarFiel(fiel);
-		} else {
-
-			dao.adicionarFiel(fiel);
-		}
 	}
 
-	public List<Fiel> listarTodos() {
+	public Pagamento atualizarBss(Pagamento pg) {
 
-		return dao.listarFiel();
+		try {
+
+			pg = pgDao.atualizar(pg);
+			return pg;
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+		return null;
 	}
 
-	private boolean isCpfValido(String cpf) {
+	public int apagar(Pagamento pg) {
+		
+		try {
+			
+			pgDao.apagar(pg);
+			return 2;
+		} catch (Exception e) {
 
-		return cpf != null && cpf.replaceAll("\\D", "").length() == 11;
+			e.printStackTrace();
+		}
+		return 0;
 	}
+
 }

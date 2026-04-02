@@ -14,6 +14,7 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.text.MaskFormatter;
 
+import br.com.kaio.cadswingfiel.busines.FielBusines;
 import br.com.kaio.cadswingfiel.dao.FielDao;
 import br.com.kaio.cadswingfiel.domain.Fiel;
 
@@ -172,7 +173,9 @@ public class UiFielFrm {
 			
 			if (modoEdicao) {
 
-				dao.adicionarFiel(fiel);
+				FielBusines fbb =  new FielBusines();
+				fbb.salvarFiel(fiel);
+//				dao.adicionarFiel(fiel);
 				mensagem("Fiel cadastrado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
 
 			} else {
@@ -219,6 +222,7 @@ public class UiFielFrm {
 			dao.removerFiel(cpfLimpo);
 
 			mensagem("Fiel apagado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
+			dialog.setVisible(false);
 
 			limparCampos();
 			habilitarControles(false);
@@ -232,7 +236,6 @@ public class UiFielFrm {
 		
 		if (!modoEdicao) {
 			
-			limparCampos();
 			habilitarControles(false);
 		} else {
 			

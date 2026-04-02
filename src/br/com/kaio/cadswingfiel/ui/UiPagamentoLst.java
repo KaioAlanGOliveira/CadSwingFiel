@@ -55,8 +55,8 @@ public class UiPagamentoLst {
 
 		table = new JTable();
 		scrollPane.setViewportView(table);
-		table.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "CodPagamento", "CPF", "Nome", "Valor", "Tipo" }));
+		table.setModel(
+				new DefaultTableModel(new Object[][] {}, new String[] { "CPF", "Código", "Nome", "Valor", "Tipo" }));
 		table.setDefaultEditor(Object.class, null);
 		table.addMouseListener(new MouseAdapter() {
 
@@ -116,7 +116,7 @@ public class UiPagamentoLst {
 					for (PagamentoView pgView : lista) {
 
 						Object[] linha = { pgView.getId().getCodPagamento(), pgView.getId().getCpf(), pgView.getNome(),
-								pgView.getValor(), pgView.getTipo() };
+								pgView.getValor(), tipoConvertido(pgView.getTipo()) };
 						modelo.addRow(linha);
 					}
 				} catch (Exception err) {
@@ -156,5 +156,14 @@ public class UiPagamentoLst {
 		dialog.setLocationRelativeTo(framePai);
 		dialog.setResizable(false);
 		dialog.setVisible(true);
+	}
+
+	private String tipoConvertido(Integer tipo) {
+
+		if (tipo == 0)
+			return "Oferta";
+
+		return "Dízimo";
+
 	}
 }

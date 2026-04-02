@@ -8,39 +8,16 @@ import br.com.kaio.cadswingfiel.domain.PagamentoView;
 import br.com.kaio.cadswingfiel.persistence.EmFactory;
 //import br.com.kaio.cadswingfiel.domain.PagamentoView;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 
 public class PagamentoDao {
 
-	private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("fielPersistenceUnit");
-	private static EntityManager em = emf.createEntityManager();
-
 	public Pagamento getPagamentoById(PagamentoId id) throws Exception {
+		EntityManager em = EmFactory.getEm();
 		return em.find(Pagamento.class, id);
 	}
 
-//	public List<Pagamento> getLista(String cpf) throws Exception {
-//
-//		try {
-//			String sql = """
-//					    select o
-//					    from Pagamento o
-//					    where
-//					        (:cpf = '' or o.id.cpf = :cpf)
-//					""";
-//
-//			TypedQuery<Pagamento> query = em.createQuery(sql, Pagamento.class);
-//			query.setParameter("cpf", cpf);
-//
-//			return query.getResultList();
-//		} catch (Exception e) {
-//			throw new RuntimeException(e);
-//		}
-//	}
-//
 	public Long adicionar(Pagamento pg) throws Exception {
 
 		EntityManager em = EmFactory.getEm();
@@ -59,9 +36,10 @@ public class PagamentoDao {
 			em.getTransaction().commit();
 
 			System.out.println("salvo");
-			
+
 			return max;
 		} catch (Exception e) {
+
 			throw new RuntimeException("Erro ao adicionar fiel", e);
 		}
 	}
@@ -75,9 +53,10 @@ public class PagamentoDao {
 			em.getTransaction().begin();
 			em.merge(pg);
 			em.getTransaction().commit();
-			
+
 			return pg;
 		} catch (Exception e) {
+
 			e.printStackTrace();
 			throw new RuntimeException("erro ao atualizar fiel", e);
 		}
@@ -89,32 +68,22 @@ public class PagamentoDao {
 		EntityManager em = EmFactory.getEm();
 
 		try {
+
 			em.getTransaction().begin();
 			Pagamento pag = em.find(Pagamento.class, pagamento.getId());
 			em.remove(pag);
 			em.getTransaction().commit();
 		} catch (Exception e) {
+
 			throw new RuntimeException(e);
 		}
 	}
-//
-//	public static List<Pagamento> getLista(long cpf) {
-//
-//		String sql = """
-//				    select o
-//				    from Pagamento o
-//				    where
-//				        (:cpf = '' or o.id.cpf = :cpf)
-//				""";
-//
-//		TypedQuery<Pagamento> query = em.createQuery(sql, Pagamento.class);
-//		query.setParameter("cpf", cpf);
-//
-//		return query.getResultList();
-//	}
 
 	public List<PagamentoView> buscarPorFiltro(String cpf, String nome) throws Exception {
+
+		EntityManager em = EmFactory.getEm();
 		try {
+
 			String jpql = """
 					  SELECT vw FROM PagamentoView vw
 					           WHERE (:cpf = '' OR vw.id.cpf = :cpf)
@@ -126,24 +95,8 @@ public class PagamentoDao {
 			query.setParameter("nome", (nome != null && !nome.trim().isEmpty()) ? "%" + nome.trim() + "%" : "");
 			return query.getResultList();
 		} catch (Exception e) {
+
 			throw new RuntimeException("Erro ao listar fiéis", e);
 		}
 	}
 }
-
-//public List<PagamentoView> listarDizimistas() {
-//	String sql = "SELECT fw FROM PagamentoView  fw";
-//	TypedQuery<PagamentoView> typedQuery = em.createQuery(sql, PagamentoView.class);
-//	return typedQuery.getResultList();
-//}
-//
-
-//
-//public void adicionaDizimistas(Pagamento novo) {
-//
-//	em.getTransaction().begin();
-//	em.persist(novo);
-//	em.getTransaction().commit();
-//
-//}
-//}

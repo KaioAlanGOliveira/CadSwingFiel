@@ -16,6 +16,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
+import br.com.kaio.cadswingfiel.busines.PagamentoBusines;
 import br.com.kaio.cadswingfiel.dao.FielDao;
 import br.com.kaio.cadswingfiel.dao.PagamentoDao;
 //import br.com.kaio.cadswingfiel.dao.PagamentoDao;
@@ -184,20 +185,20 @@ public class UiPagamentoFrm {
 		}
 
 		Pagamento pg = getPagamento();
-		PagamentoDao dao = new PagamentoDao();
+		PagamentoBusines pgBss = new PagamentoBusines();
 
 		try {
 
 			if (modoEdicao) {
 
-				Integer codPagamento = dao.adicionar(pg).intValue();
+				Integer codPagamento = pgBss.salvar(pg).intValue();
 				pg.getId().setCodPagamento(codPagamento);
 				codPagamentoId = pg.getId();
-				mensagem("Fiel cadastrado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
+				mensagem("Pagamento cadastrado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
 			} else {
 
-				pg = dao.atualizar(pg);
-				mensagem("Fiel atualizado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
+				pg = pgBss.atualizarBss(pg);
+				mensagem("Pagamento atualizado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
 			}
 
 			carregarDadosParaEdicao(pg);
@@ -211,7 +212,7 @@ public class UiPagamentoFrm {
 	private void alterar() {
 
 		this.modoEdicao = false;
-		cbxFiel.setEnabled(true);
+		cbxFiel.setEnabled(false);
 		habilitarControles(true);
 	}
 
@@ -228,10 +229,17 @@ public class UiPagamentoFrm {
 		try {
 
 			Pagamento pg = getPagamento();
-			PagamentoDao dao = new PagamentoDao();
-			dao.apagar(pg);
+			PagamentoBusines pgBss = new PagamentoBusines();
+			int pago = pgBss.apagar(pg);
 
-			mensagem("Fiel apagado com sucesso!", JOptionPane.INFORMATION_MESSAGE);
+			if (pago == 2) {
+
+				dialog.setVisible(false);
+				mensagem("Pagamento apagado com sucesso!", pago);
+			} else {
+
+				mensagem("Pagamento não foi apagado!", pago);
+			}
 
 			limparCampos();
 			habilitarControles(false);
@@ -244,14 +252,14 @@ public class UiPagamentoFrm {
 
 	private void cancelar() {
 
-		if (!modoEdicao) {
+		if (modoEdicao) {
+
+			dialog.setVisible(false);
+		} else {
 
 			limparCampos();
 			habilitarControles(false);
 			carregarDadosParaEdicao(codPagamentoId);
-		} else {
-
-			dialog.setVisible(false);
 		}
 	}
 
@@ -263,13 +271,20 @@ public class UiPagamentoFrm {
 			txtValor.requestFocus();
 			return false;
 		}
-		
-		if (!txtValor.getText().matches("\\d+")) {
-			
-		    JOptionPane.showMessageDialog(null, "Digite apenas números!");
-		    txtValor.setText(""); 
-		    txtValor.requestFocus();
-		    return false; 
+
+		if (!txtValor.getText().matches("[\\d.,]+")) {
+
+			JOptionPane.showMessageDialog(null, "Digite apenas números!");
+			txtValor.setText("");
+			txtValor.requestFocus();
+			return false;
+		}
+
+		if (grupo.getSelection() == null) {
+			JOptionPane.showMessageDialog(null, "Por favor, selecione um tipo válido.", "Aviso",
+					JOptionPane.WARNING_MESSAGE);
+			cbxFiel.requestFocus();
+			return false;
 		}
 		return true;
 	}
@@ -302,7 +317,6 @@ public class UiPagamentoFrm {
 		txtValor.setEditable(habilitar);
 		txtCodPg.setEnabled(false);
 		cbxFiel.setEnabled(habilitar);
-
 	}
 
 	public void mensagem(String msg, int tipo) {
@@ -420,6 +434,5 @@ public class UiPagamentoFrm {
 		}
 
 		carregarDadosParaEdicao(pagamento);
-
 	}
 }

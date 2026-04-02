@@ -25,6 +25,19 @@ public class Fiel {
 	@Column(name = "telefone")
 	private String telefone;
 
+	public Fiel() {
+		super();
+	}
+
+	public Fiel(String cpf, String nome, String email, Integer idade, String telefone) {
+		super();
+		this.cpf = cpf;
+		this.nome = nome;
+		this.email = email;
+		this.idade = idade;
+		this.telefone = telefone;
+	}
+
 	public String getCpf() {
 		return cpf;
 	}
@@ -62,19 +75,6 @@ public class Fiel {
 	}
 
 	public void setTelefone(String telefone) {
-		this.telefone = telefone;
-	}
-
-	public Fiel() {
-		super();
-	}
-
-	public Fiel(String cpf, String nome, String email, Integer idade, String telefone) {
-		super();
-		this.cpf = cpf;
-		this.nome = nome;
-		this.email = email;
-		this.idade = idade;
 		this.telefone = telefone;
 	}
 
